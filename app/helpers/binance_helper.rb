@@ -15,7 +15,7 @@ module BinanceHelper
 	def discover_symbols
 		symbols = get_symbols()
 		symbols.each do |e|
-			Symbol.find_or_create_by(symbol: e)
+			CryptoSymbol.find_or_create_by(symbol: e)
 		end
 	end
 
