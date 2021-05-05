@@ -3,7 +3,7 @@ module BinanceHelper
 	@ak = ENV['BNB_AK']
 	@sk = ENV['BNB_SK']
 
-	def get_symbols
+	def get_symbols(not_in=[])
 		response = RestClient.get("https://api.binance.com/api/v3/exchangeInfo")
 		symbols = JSON.parse(response.body)
 
