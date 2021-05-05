@@ -1,4 +1,4 @@
-class Symbol
+class CryptoSymbol
 	include Mongoid::Document
 	include Mongoid::Timestamps
 	
