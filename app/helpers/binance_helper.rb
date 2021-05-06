@@ -24,7 +24,7 @@ module BinanceHelper
 		timestamp = Time.now.to_i*1000
 		params = {timestamp: timestamp}
 		params[:signature] = get_signature(params)
-		response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': @ak})
+		response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': keys[:ak]})
 		return JSON.parse(response.body, symbolize_names: true)
 	end
 
