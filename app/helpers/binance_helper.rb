@@ -143,6 +143,7 @@ module BinanceHelper
 			state = SymbolState.where(good: true, symbol_name: {'$nin': not_in}).sort(matches: -1).first
 			price = prices.find{|e| e[:symbol] == state.symbol_name}[:price].to_f
 			if state.goal > price
+				not_in << state.symbol_name
 				state = nil
 			end
 		end
