@@ -53,4 +53,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'rest-client'
 gem 'dalli'
 
-gem 'mongoid'
+#gem 'mongoid'
+gem 'mongoid', '~> 7.2.0'
