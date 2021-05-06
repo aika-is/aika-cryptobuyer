@@ -127,7 +127,7 @@ module BinanceHelper
 	def refresh_states
 		missing_symbols = CryptoSymbol.where(symbol: {'$nin': SymbolState.all.collect{|e| e.symbol}})
 		missing_symbols.each do |symbol|
-			calculate_symbol_state(symbol.s.symbol)
+			calculate_symbol_state(symbol.symbol)
 		end
 	end
 
