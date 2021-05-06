@@ -110,6 +110,11 @@ module BinanceHelper
 		return state
 	end
 
+	def get_available_cash
+		wallet_assets = get_wallet_assets
+		return wallet_assets.find{|e| e[:asset] == 'BUSD'}[:free].to_f
+	end
+
 	#-----
 	def discover_symbols
 		symbols = get_symbols()
@@ -149,5 +154,19 @@ module BinanceHelper
 		end
 		return state
 	end
+
+	def order_purchase
+		order_amount = 50
+
+		if get_available_cash > order_amount
+			assets = get_wallet_assets
+			not_in = assets.select{|e| e[:locked].to_f == 0}.collect{|e| "#{e[:asset]}BUSD"}
+			state = pick_symbol(not_in)
+			puts "BUY #{state.symbol_name}"
+			puts state.to_json
+		else
+			puts "NO MONEY LEFT"
+		end
+	end	
 
 end
