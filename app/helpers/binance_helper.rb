@@ -106,6 +106,7 @@ module BinanceHelper
 				state.set({symbol_name: symbol_name, max: max, min: min, price: price, goal: goal, midpoint: midpoint, good: good, matches: matches})
 			end
 		end
+		state.touch
 
 		return state
 	end
