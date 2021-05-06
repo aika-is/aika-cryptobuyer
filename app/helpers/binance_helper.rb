@@ -43,7 +43,7 @@ module BinanceHelper
 	def fetch_trades symbol_name, from, to
 		Rails.cache.fetch("#{symbol_name}_#{from.to_s}_#{to.to_s}", expires_in: 24.hours) do
 
-			puts "#{symbol_name}_#{symbol_name.to_s}_#{to.to_s} MISS"
+			puts "#{symbol_name}_#{from.to_s}_#{to.to_s} MISS"
 			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
 			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params,'X-MBX-APIKEY': access_keys[:ak]})
 			trades = JSON.parse(response.body, symbolize_names: true)
@@ -129,6 +129,24 @@ module BinanceHelper
 		missing_symbols.each do |e|
 			calculate_symbol_state(e.symbol_name)
 		end
+		state = SymbolState.where(updated_at: {'$lt': Time.now - 15.minutes}).sort(updated_at: 1).first
+		while(state.present?)
+			calculate_symbol_state(state.symbol_name)
+			state = SymbolState.where(updated_at: {'$lt': Time.now - 15.minutes}).sort(updated_at: 1).first
+		end
+	end
+
+	def pick_symbol(not_in=[])
+		prices = get_prices()
+		state = nil
+		while(state.nil?)
+			state = SymbolState.where(good: true, symbol_name: {'$nin': not_in}).sort(matches: -1).first
+			price = prices.find{|e| e[:symbol] == state.symbol_name}[:price].to_f
+			if state.goal > price
+				state = nil
+			end
+		end
+		return state
 	end
 
 end
