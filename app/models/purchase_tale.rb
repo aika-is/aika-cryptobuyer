@@ -15,7 +15,7 @@ class PurchaseTale
 	field :sale_completed, type: Boolean, default: false
 
 	def goal
-		return price * self.goalFactor
+		return price * PurchaseTale.goalFactor
 	end
 
 	def self.stale_buys
