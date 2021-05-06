@@ -88,8 +88,8 @@ module BinanceHelper
 				from = Time.at(((Time.now - (window*(i+1))).to_i / window)*window)
 				trades_result = fetch_trades symbol_name, from, to
 				if trades_result.blank?
-					puts "break"
-					break
+					state.touch
+					return state
 				end
 				maxes << trades_result[:max]
 				min = [min, trades_result[:min]].min
@@ -161,7 +161,7 @@ module BinanceHelper
 
 		if get_available_cash > order_amount
 			assets = get_wallet_assets
-			not_in = assets.select{|e| e[:locked].to_f == 0}.collect{|e| "#{e[:asset]}BUSD"}
+			not_in = assets.select{|e| e[:locked].to_f > 0}.collect{|e| "#{e[:asset]}BUSD"}
 			state = pick_symbol(not_in)
 			puts "BUY #{state.symbol_name}"
 			puts state.to_json
