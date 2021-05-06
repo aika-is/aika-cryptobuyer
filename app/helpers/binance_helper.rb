@@ -1,6 +1,6 @@
 module BinanceHelper
 
-	def keys
+	def access_keys
 		{ak: ENV['BNB_AK'], sk: ENV['BNB_SK']}
 	end
 
@@ -13,7 +13,7 @@ module BinanceHelper
 	end
 
 	def get_signature(params)
-		key = keys[:sk]
+		key = access_keys[:sk]
 		data = params.to_query
 		digest = OpenSSL::Digest.new('sha256')
 		signature = OpenSSL::HMAC.hexdigest(digest, key, data)
@@ -24,7 +24,7 @@ module BinanceHelper
 		timestamp = Time.now.to_i*1000
 		params = {timestamp: timestamp}
 		params[:signature] = get_signature(params)
-		response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': keys[:ak]})
+		response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': access_keys[:ak]})
 		return JSON.parse(response.body, symbolize_names: true)
 	end
 
