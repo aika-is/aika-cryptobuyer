@@ -97,7 +97,7 @@ module BinanceHelper
 			end
 		
 			if maxes.length > 0
-				goal = price * 1.01061
+				goal = price * PurchaseTale.goalFactor
 				midpoint = ((max-min)/2)+min
 				matches = maxes.select{|e| e > goal}.length
 				good = matches > (maxes.length / 2)
@@ -114,6 +114,14 @@ module BinanceHelper
 	def get_available_cash
 		wallet_assets = get_wallet_assets
 		return wallet_assets.find{|e| e[:asset] == 'BUSD'}[:free].to_f
+	end
+
+	def perform_buy(symbol_name, current_order_amount, price)
+		timestamp = Time.now.to_i*1000
+		params = {symbol: symbol_name, side: 'BUY', timeInForce: 'GTC', quantity: current_order_amount / price, price: price, timestamp: timestamp}
+		params[:signature] = get_signature(params)
+		response = RestClient.get("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': access_keys[:ak]})
+		return JSON.parse(response.body, symbolize_names: true)
 	end
 
 	#-----
@@ -153,18 +161,34 @@ module BinanceHelper
 				state = nil
 			end
 		end
-		return state
+		return {state: state, price: price}
 	end
 
 	def order_purchase
-		order_amount = 50
-
-		if get_available_cash > order_amount
+		order_amount = 40
+		cash = get_available_cash
+		if cash > order_amount
 			assets = get_wallet_assets
 			not_in = assets.select{|e| e[:locked].to_f > 0}.collect{|e| "#{e[:asset]}BUSD"}
-			state = pick_symbol(not_in)
+			result = pick_symbol(not_in)
+			state = result[:state]
+			price = result[:price]
+			factor = (cash / price.to_f)
+			if factor >= 1 && < 2
+				current_order_amount = cash
+			elsif factor >= 2
+				current_order_amount = order_amount
+			elsif factor < 1
+				current_order_amount = 0
+			end
 			puts "BUY #{state.symbol_name}"
+			puts "CASH #{cash}" 
+			puts "PRICE #{price}" 
+			puts "GOAL #{state.goal}" 
+			puts "AMOUNT #{current_order_amount}" 
 			puts state.to_json
+
+			#perform_buy(state.symbol_name, current_order_amount, price)
 		else
 			puts "NO MONEY LEFT"
 		end
