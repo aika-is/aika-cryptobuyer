@@ -45,7 +45,7 @@ module BinanceHelper
 
 			puts "#{symbol_name}_#{symbol_name.to_s}_#{to.to_s} MISS"
 			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
-			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params,'X-MBX-APIKEY': keys[:ak]})
+			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params,'X-MBX-APIKEY': access_keys[:ak]})
 			trades = JSON.parse(response.body, symbolize_names: true)
 			trade_results = nil
 			if trades.length > 0
