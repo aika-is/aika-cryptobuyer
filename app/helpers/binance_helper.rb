@@ -174,7 +174,7 @@ module BinanceHelper
 			state = result[:state]
 			price = result[:price]
 			factor = (cash / price.to_f)
-			if factor >= 1 && < 2
+			if factor >= 1 && factor < 2
 				current_order_amount = cash
 			elsif factor >= 2
 				current_order_amount = order_amount
