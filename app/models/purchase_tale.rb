@@ -7,7 +7,9 @@ class PurchaseTale
 
 	field :buy_id, type: Integer
 	field :buy_complete, type: Boolean, default: false
-	field :buy_at, type: Time
+	field :buy_at, type: Time, default: Time.now
+
+	field :asset_quantity, type: Float
 
 	field :sale_id, type: Integer
 	field :sale_completed, type: Boolean, default: false

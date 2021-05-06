@@ -12,9 +12,17 @@ module BinanceHelper
 		return symbols
 	end
 
+	def get_symbol(symbol_name)
+		response = RestClient.get("https://api.binance.com/api/v3/exchangeInfo")
+		symbols = JSON.parse(response.body, symbolize_names: true)
+
+		symbol = symbols[:symbols].find{ |e| e[:symbol] == symbol_name }
+		return symbol
+	end
+
 	def get_signature(params)
 		key = access_keys[:sk]
-		data = params.to_query
+		data = params.keys.collect{|e| "#{e}=#{params[e]}"}*'&'
 		digest = OpenSSL::Digest.new('sha256')
 		signature = OpenSSL::HMAC.hexdigest(digest, key, data)
 		return signature
@@ -116,9 +124,17 @@ module BinanceHelper
 		return wallet_assets.find{|e| e[:asset] == 'BUSD'}[:free].to_f
 	end
 
-	def perform_buy(symbol_name, current_order_amount, price)
+	def perform_market_buy(symbol_name, current_order_amount)
 		timestamp = Time.now.to_i*1000
-		params = {symbol: symbol_name, side: 'BUY', type: 'LIMIT', timeInForce: 'GTC', quantity: current_order_amount / price, price: price, timestamp: timestamp}
+		params = {symbol: symbol_name, side: 'BUY', type: 'MARKET', quoteOrderQty: current_order_amount, timestamp: timestamp}
+		params[:signature] = get_signature(params)
+		response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': access_keys[:ak]})
+		return JSON.parse(response.body, symbolize_names: true)
+	end
+
+	def perform_limit_sale(symbol_name, quantity, price)
+		timestamp = Time.now.to_i*1000
+		params = {symbol: symbol_name, side: 'SELL', type: 'LIMIT', timeInForce: 'GTC', quantity: quantity, price: price, timestamp: timestamp}
 		params[:signature] = get_signature(params)
 		response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': access_keys[:ak]})
 		return JSON.parse(response.body, symbolize_names: true)
@@ -173,7 +189,7 @@ module BinanceHelper
 			result = pick_symbol(not_in)
 			state = result[:state]
 			price = result[:price]
-			factor = (cash / price.to_f)
+			factor = (cash / order_amount)
 			if factor >= 1 && factor < 2
 				current_order_amount = cash
 			elsif factor >= 2
@@ -188,7 +204,15 @@ module BinanceHelper
 			puts "AMOUNT #{current_order_amount}" 
 			puts state.to_json
 
-			#perform_buy(state.symbol_name, current_order_amount, price)
+			order = perform_market_buy(state.symbol_name, current_order_amount)
+			price = order[:fills].collect{|e| e[:price].to_f}.inject{|sum, e| sum + e}/order[:fills].length
+			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty])
+			quantity = get_wallet_assets.find{|e| e[:asset] == symbol_name.gsub('BUSD','')}[:free].to_f
+			precision = (get_symbol(symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+			quantity = quantity.floor(precision)
+			order = perform_limit_sale(symbol_name, quantity, tale.goal)
+			tale.sale_id = order[:orderId]
+			tale.save
 		else
 			puts "NO MONEY LEFT"
 		end
