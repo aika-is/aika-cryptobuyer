@@ -211,7 +211,8 @@ module BinanceHelper
 			quantity = get_wallet_assets.find{|e| e[:asset] == state.symbol_name.gsub('BUSD','')}[:free].to_f
 			precision = (get_symbol(state.symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			quantity = quantity.floor(precision)
-			order = perform_limit_sale(state.symbol_name, quantity, tale.goal)
+			goal = tale.goal.round(precision)
+			order = perform_limit_sale(state.symbol_name, quantity, goal)
 			puts order
 			tale.sale_id = order[:orderId]
 			tale.save
