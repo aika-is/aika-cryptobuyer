@@ -2,6 +2,6 @@ class CryptoSymbol
 	include Mongoid::Document
 	include Mongoid::Timestamps
 	
-	field :symbol, type: String
+	field :symbol_name, type: String
 
 end

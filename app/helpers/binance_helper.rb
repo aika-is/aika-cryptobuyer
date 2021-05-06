@@ -40,11 +40,11 @@ module BinanceHelper
 		return wallet_assets
 	end
 
-	def fetch_trades symbol, from, to
-		Rails.cache.fetch("#{symbol}_#{from.to_s}_#{to.to_s}", expires_in: 24.hours) do
+	def fetch_trades symbol_name, from, to
+		Rails.cache.fetch("#{symbol_name}_#{from.to_s}_#{to.to_s}", expires_in: 24.hours) do
 
-			puts "#{symbol}_#{from.to_s}_#{to.to_s} MISS"
-			params = {symbol: symbol, endTime: to.to_i*1000, startTime: from.to_i*1000}
+			puts "#{symbol_name}_#{symbol_name.to_s}_#{to.to_s} MISS"
+			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
 			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params,'X-MBX-APIKEY': keys[:ak]})
 			trades = JSON.parse(response.body, symbolize_names: true)
 			trade_results = nil
@@ -64,18 +64,18 @@ module BinanceHelper
 		return {price: price, min: _min, max: _max}
 	end
 
-	def calculate_symbol_state(symbol)
+	def calculate_symbol_state(symbol_name)
 		window = 60*15
 		max = 0
 		min = 999999999999999999999
 		avgs = []
 		maxes = []
 		price = nil
-		state = SymbolState.find_or_create_by(symbol: symbol)
+		state = SymbolState.find_or_create_by(symbol_name: symbol_name)
 
 		to = Time.now
 		from = Time.at((Time.now.to_i / window)*window)
-		trades_result = fetch_trades symbol, from, to
+		trades_result = fetch_trades symbol_name, from, to
 
 		if trades_result.present?
 			price = trades_result[:price]
@@ -86,7 +86,7 @@ module BinanceHelper
 			(0..(24*4)).to_a.each do |i|
 				to = Time.at(((Time.now - (window*i)).to_i / window)*window)
 				from = Time.at(((Time.now - (window*(i+1))).to_i / window)*window)
-				trades_result = fetch_trades symbol, from, to
+				trades_result = fetch_trades symbol_name, from, to
 				if trades_result.blank?
 					puts "break"
 					break
@@ -103,7 +103,7 @@ module BinanceHelper
 				good = matches > (maxes.length / 2)
 
 				
-				state.set({symbol: symbol, max: max, min: min, price: price, goal: goal, midpoint: midpoint, good: good, matches: matches})
+				state.set({symbol_name: symbol_name, max: max, min: min, price: price, goal: goal, midpoint: midpoint, good: good, matches: matches})
 			end
 		end
 
@@ -114,7 +114,7 @@ module BinanceHelper
 	def discover_symbols
 		symbols = get_symbols()
 		symbols.each do |e|
-			CryptoSymbol.find_or_create_by(symbol: e)
+			CryptoSymbol.find_or_create_by(symbol_name: e)
 		end
 	end
 
@@ -125,9 +125,9 @@ module BinanceHelper
 	end
 
 	def refresh_states
-		missing_symbols = CryptoSymbol.where(symbol: {'$nin': SymbolState.all.collect{|e| e.symbol}})
-		missing_symbols.each do |symbol|
-			calculate_symbol_state(symbol.symbol)
+		missing_symbols = CryptoSymbol.where(symbol_name: {'$nin': SymbolState.all.collect{|e| e.symbol_name}})
+		missing_symbols.each do |e|
+			calculate_symbol_state(e.symbol_name)
 		end
 	end
 

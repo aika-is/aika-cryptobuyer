@@ -2,7 +2,7 @@ class SymbolState
 	include Mongoid::Document
 	include Mongoid::Timestamps
 	
-	field :symbol, type: String
+	field :symbol_name, type: String
 	field :price, type: Float
 	field :max, type: Float
 	field :min, type: Float
