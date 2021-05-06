@@ -118,7 +118,7 @@ module BinanceHelper
 
 	def perform_buy(symbol_name, current_order_amount, price)
 		timestamp = Time.now.to_i*1000
-		params = {symbol: symbol_name, side: 'BUY', timeInForce: 'GTC', quantity: current_order_amount / price, price: price, timestamp: timestamp}
+		params = {symbol: symbol_name, side: 'BUY', type: 'LIMIT', timeInForce: 'GTC', quantity: current_order_amount / price, price: price, timestamp: timestamp}
 		params[:signature] = get_signature(params)
 		response = RestClient.get("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': access_keys[:ak]})
 		return JSON.parse(response.body, symbolize_names: true)
