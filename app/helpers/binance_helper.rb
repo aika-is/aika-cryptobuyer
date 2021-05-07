@@ -208,11 +208,12 @@ module BinanceHelper
 			puts order
 			price = order[:fills].collect{|e| e[:price].to_f}.inject{|sum, e| sum + e}/order[:fills].length
 			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty])
-			quantity = get_wallet_assets.find{|e| e[:asset] == state.symbol_name.gsub('BUSD','')}[:free].to_f
-			precision = (get_symbol(state.symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+			quantity = get_wallet_assets.find{|e| e[:asset] == tale.symbol_name.gsub('BUSD','')}[:free].to_f
+			precision = (get_symbol(tale.symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			quantity = quantity.floor(precision)
+			precision = (get_symbol(tale.symbol_name)[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
 			goal = tale.goal.round(precision)
-			order = perform_limit_sale(state.symbol_name, quantity, goal)
+			order = perform_limit_sale(tale.symbol_name, quantity, goal)
 			puts order
 			tale.sale_id = order[:orderId]
 			tale.save
