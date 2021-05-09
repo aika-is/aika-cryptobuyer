@@ -131,6 +131,7 @@ module BinanceHelper
 		begin
 			response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': access_keys[:ak]})
 		rescue => e
+			puts params
 			puts e.message
 			puts e.response.body
 			raise e
