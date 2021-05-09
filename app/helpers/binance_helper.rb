@@ -214,7 +214,7 @@ module BinanceHelper
 			order = perform_market_buy(state.symbol_name, current_order_amount)
 			puts order
 			price = order[:fills].collect{|e| e[:price].to_f}.inject{|sum, e| sum + e}/order[:fills].length
-			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], state_snapshot: state.as_json.except([:'$oid']))
+			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], state_snapshot: state.as_json.except!("_id"))
 			quantity = get_wallet_assets.find{|e| e[:asset] == tale.symbol_name.gsub('BUSD','')}[:free].to_f
 			precision = (get_symbol(tale.symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			quantity = quantity.floor(precision)
