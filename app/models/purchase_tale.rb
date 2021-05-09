@@ -14,6 +14,8 @@ class PurchaseTale
 	field :sale_id, type: Integer
 	field :sale_completed, type: Boolean, default: false
 
+	field :state_snapshot, type: Hash
+
 	def goal
 		return price * PurchaseTale.goalFactor
 	end
