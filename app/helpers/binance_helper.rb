@@ -166,10 +166,8 @@ module BinanceHelper
 		missing_symbols.each do |e|
 			calculate_symbol_state(e.symbol_name)
 		end
-		state = SymbolState.where(updated_at: {'$lt': Time.now - 9.minutes}).sort(updated_at: 1).first
-		while(state.present?)
+		SymbolState.all.each do |state|
 			calculate_symbol_state(state.symbol_name)
-			state = SymbolState.where(updated_at: {'$lt': Time.now - 9.minutes}).sort(updated_at: 1).first
 		end
 	end
 
@@ -216,7 +214,7 @@ module BinanceHelper
 			order = perform_market_buy(state.symbol_name, current_order_amount)
 			puts order
 			price = order[:fills].collect{|e| e[:price].to_f}.inject{|sum, e| sum + e}/order[:fills].length
-			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], state_snapshot: state.as_json)
+			tale = PurchaseTale.create!(symbol_name: state.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], state_snapshot: state.as_json.except([:'$oid']))
 			quantity = get_wallet_assets.find{|e| e[:asset] == tale.symbol_name.gsub('BUSD','')}[:free].to_f
 			precision = (get_symbol(tale.symbol_name)[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			quantity = quantity.floor(precision)
