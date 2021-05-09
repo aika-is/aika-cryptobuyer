@@ -159,10 +159,10 @@ module BinanceHelper
 		missing_symbols.each do |e|
 			calculate_symbol_state(e.symbol_name)
 		end
-		state = SymbolState.where(updated_at: {'$lt': Time.now - 1.minute}).sort(updated_at: 1).first
+		state = SymbolState.where(updated_at: {'$lt': Time.now - 9.minutes}).sort(updated_at: 1).first
 		while(state.present?)
 			calculate_symbol_state(state.symbol_name)
-			state = SymbolState.where(updated_at: {'$lt': Time.now - 1.minute}).sort(updated_at: 1).first
+			state = SymbolState.where(updated_at: {'$lt': Time.now - 9.minutes}).sort(updated_at: 1).first
 		end
 	end
 
@@ -183,7 +183,7 @@ module BinanceHelper
 	def order_purchase
 		track = WalletTrack.all.sort(created_at: -1).first
 		assets_value = track.value
-		order_amount = assets_value / 10
+		order_amount = [assets_value / 10, 10].max
 		cash = get_available_cash
 		if cash > order_amount
 			assets = get_wallet_assets
