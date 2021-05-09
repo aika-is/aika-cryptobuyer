@@ -190,7 +190,7 @@ module BinanceHelper
 	def order_purchase
 		track = WalletTrack.all.sort(created_at: -1).first
 		assets_value = track.value
-		order_amount = [assets_value / 10, 10].max
+		order_amount = [(assets_value / 10).round(2), 10].max
 		cash = get_available_cash
 		if cash > order_amount
 			assets = get_wallet_assets
