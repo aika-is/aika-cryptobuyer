@@ -128,7 +128,13 @@ module BinanceHelper
 		timestamp = Time.now.to_i*1000
 		params = {symbol: symbol_name, side: 'BUY', type: 'MARKET', quoteOrderQty: current_order_amount, timestamp: timestamp}
 		params[:signature] = get_signature(params)
-		response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': access_keys[:ak]})
+		begin
+			response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': access_keys[:ak]})
+		rescue => e
+			puts e.message
+			puts e.response.body
+			raise e
+		end
 		return JSON.parse(response.body, symbolize_names: true)
 	end
 
