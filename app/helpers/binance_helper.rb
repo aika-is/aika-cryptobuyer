@@ -220,7 +220,7 @@ module BinanceHelper
 			quantity = quantity.floor(precision)
 			precision = (get_symbol(tale.symbol_name)[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
 			goal = tale.goal.round(precision)
-			order = perform_limit_sale(tale.symbol_name, quantity, goal)
+			order = perform_limit_sale(tale.symbol_name, quantity, "%.#{precision}f" % goal)
 			puts order
 			tale.sale_id = order[:orderId]
 			tale.save
