@@ -198,8 +198,8 @@ module BinanceHelper
 			price = result[:price]
 			factor = (cash / order_amount)
 			if factor >= 1 && factor < 2
-				current_order_amount = cash
-			elsif factor >= 2
+#				current_order_amount = cash
+#			elsif factor >= 2
 				current_order_amount = order_amount
 			elsif factor < 1
 				current_order_amount = 0
