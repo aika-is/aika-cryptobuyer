@@ -158,6 +158,21 @@ module BinanceHelper
 		response = RestClient.get("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': access_keys[:ak]})
 		return JSON.parse(response.body, symbolize_names: true)
 	end
+
+	def pick_stale_to_liquidate
+		prices = get_prices
+		PurchaseTale.where(sale_completed: false).collect{|t| {tale: t, price: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.select{|e| e[:tale][:created_at] < Time.now - 24.hours}.last
+	end
+
+	def liquidate liquidation
+		tale = liquidation[:tale]
+		price = liquidation[:price]
+		
+		order = get_order tale.symbol_name, tale.sale_id
+		cancel_order t.sale_id
+		quantity = order[:origQty].to_f - order[:executedQty].to_f
+		order = perform_limit_sale(tale.symbol_name, quantity, price)
+	end
 	#-----
 	def discover_symbols
 		symbols = get_symbols()
@@ -257,15 +272,8 @@ module BinanceHelper
 
 	def revive_account
 		if is_stale_account?
-			prices = get_prices
-			liquidation = PurchaseTale.where(sale_completed: false).collect{|t| {tale: t, price: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.last
-			tale = liquidation[:tale]
-			price = liquidation[:price]
-			
-			order = get_order tale.symbol_name, tale.sale_id
-			cancel_order t.sale_id
-			quantity = order[:origQty].to_f - order[:executedQty].to_f
-			order = perform_limit_sale(tale.symbol_name, quantity, price)
+			liquidation = pick_state_to_liquidate
+			liquidate liquidation
 		else
 			puts "IT'S NOT STALE"
 		end
