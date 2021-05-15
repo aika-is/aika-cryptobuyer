@@ -148,7 +148,7 @@ module BinanceHelper
 	end
 
 	def is_stale_account?
-		return PurchaseTale.all.only(:created_at).sort(created_at: -1).first.created_at < Time.now - 6.hours
+		return PurchaseTale.all.sort(created_at: -1).first.created_at < Time.now - 6.hours
 	end
 
 	def get_order symbol_name, order_id
@@ -169,7 +169,7 @@ module BinanceHelper
 		price = liquidation[:price]
 		
 		order = get_order tale.symbol_name, tale.sale_id
-		cancel_order t.sale_id
+		cancel_order tale.sale_id
 		quantity = order[:origQty].to_f - order[:executedQty].to_f
 		order = perform_limit_sale(tale.symbol_name, quantity, price)
 
@@ -275,7 +275,7 @@ module BinanceHelper
 
 	def revive_account
 		if is_stale_account?
-			liquidation = pick_state_to_liquidate
+			liquidation = pick_stale_to_liquidate
 			liquidate liquidation
 		else
 			puts "IT'S NOT STALE"
