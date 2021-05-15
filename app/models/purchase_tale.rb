@@ -16,6 +16,8 @@ class PurchaseTale
 
 	field :state_snapshot, type: Hash
 
+	field :liquidated, type: Boolean, default: false	
+
 	def goal
 		return price * PurchaseTale.goalFactor
 	end

@@ -172,6 +172,9 @@ module BinanceHelper
 		cancel_order t.sale_id
 		quantity = order[:origQty].to_f - order[:executedQty].to_f
 		order = perform_limit_sale(tale.symbol_name, quantity, price)
+
+		tale.liquidated = true
+		tale.save
 	end
 	#-----
 	def discover_symbols
