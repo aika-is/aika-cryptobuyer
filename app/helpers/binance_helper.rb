@@ -148,7 +148,7 @@ module BinanceHelper
 	end
 
 	def is_stale_account?
-		return PurchaseTale.all.only(:created_at).sort(created_at: -1).first.created_at < Time.now - 12.hours
+		return PurchaseTale.all.only(:created_at).sort(created_at: -1).first.created_at < Time.now - 6.hours
 	end
 
 	def get_order symbol_name, order_id
