@@ -159,6 +159,14 @@ module BinanceHelper
 		return JSON.parse(response.body, symbolize_names: true)
 	end
 
+	def cancel_order symbol_name, order_id
+		timestamp = Time.now.to_i*1000
+		params = {symbol: symbol_name, orderId: order_id, timestamp: timestamp}
+		params[:signature] = get_signature(params)
+		response = RestClient.delete("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': access_keys[:ak]})
+		return JSON.parse(response.body, symbolize_names: true)
+	end
+
 	def pick_stale_to_liquidate
 		prices = get_prices
 		PurchaseTale.where(sale_completed: false).collect{|t| {tale: t, price: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.select{|e| e[:tale][:created_at] < Time.now - 24.hours}.last
