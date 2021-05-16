@@ -8,11 +8,11 @@ module Indicators
 			"LAST_PRICE_1MIN"
 		end
 
-		def self.fetch_symbol_indicator wallet, symbol_name, time
+		def self.fetch_symbol_indicator client_id, symbol_name, time
 			from = Time.at((time.to_i / self.interval)*self.interval)
 			to = from + self.interval
-			price = (wallet.client.get_trades symbol_name, from, to).last[:price]
-			SymbolIndicator.create!(client_id: wallet.client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: self.interval, interval_time: truncated_time, value: price)
+			price = (Wallet.client_for(client_id).get_trades symbol_name, from, to).last[:price]
+			SymbolIndicator.create!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: self.interval, interval_time: truncated_time, value: price)
 		end
 	end
 end
