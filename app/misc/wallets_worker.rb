@@ -48,7 +48,7 @@ class WalletsWorker
 	def self.discover_symbols wallet
 		symbols = wallet.client.get_symbols wallet
 		symbols.each do |symbol_name|
-			CryptoSymbol.register_symbol!(symbol_name, wallet.exchange_client_id)
+			CryptoSymbol.register_symbol!(symbol_name, wallet.client_id)
 		end
 	end
 
