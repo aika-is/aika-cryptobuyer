@@ -1,11 +1,14 @@
 module Clients
 	class BinanceClient
 
-		def self.get_symbols(not_in=[])
+		def self.get_symbols(wallet=nil, not_in=[])
 			response = RestClient.get("https://api.binance.com/api/v3/exchangeInfo")
 			symbols = JSON.parse(response.body, symbolize_names: true)
 
-			symbols = symbols[:symbols].select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol])}.collect{ |e| e[:symbol] }.shuffle
+			symbols = symbols[:symbols]
+			if wallet.present?
+				symbols = symbols.select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol])}.collect{ |e| e[:symbol] }
+			end
 			return symbols
 		end
 
