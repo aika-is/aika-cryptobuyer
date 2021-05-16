@@ -5,17 +5,17 @@ class WalletsWorker
 		wallets.each do |wallet|
 			loop_start = Time.now
 
-			sanitize_tales wallet
-			check_staleness wallet
-			discover_symbols wallet
-			update_indicators wallet
-			track_value wallet
+			self.sanitize_tales wallet
+			self.check_staleness wallet
+			self.discover_symbols wallet
+			self.update_indicators wallet
+			self.track_value wallet
 
 			loop_time = (Time.now - loop_start)
 			max_loop = [max_loop, loop_time].max
 			remaining = total_time - (Time.now - start)
 
-			log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.exchange_client_id}"]})
+			self.log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.exchange_client_id}"]})
 
 			return if remaining < max_loop
 		end
@@ -48,13 +48,14 @@ class WalletsWorker
 	def self.discover_symbols wallet
 		symbols = wallet.client.get_symbols wallet
 		symbols.each do |symbol_name|
-			CryptoSymbol.register_symbol!(symbol_name, wallet.client_id)
+			CryptoSymbol.register_symbol!(wallet.client_id, symbol_name)
 		end
+		CryptoSymbol.deregister_not_in_symbols!(wallet.client_id, symbols)
 	end
 
 	def self.update_indicators wallet
 		wallet.strategy.indicators.each do |indicator_id|
-			CryptoSymbol.symbols_for(wallet).each do |symbol|
+			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				indicator = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, indicator_id, Time.now)
 			end
 		end
