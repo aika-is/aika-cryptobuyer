@@ -3,7 +3,7 @@ module EncryptionHelper
     	salt = SecureRandom.hex
 
     	cipher = OpenSSL::Cipher.new('DES-EDE3-CBC').encrypt
-		cipher.key = "#{ENV['ENC_KEY']}_#{inner_key}"
+		cipher.key = "#{ENV['ENC_KEY']}#{inner_key}"
 		s = cipher.update(text) + cipher.final
 
 		encoded = s.unpack('H*')[0].upcase
