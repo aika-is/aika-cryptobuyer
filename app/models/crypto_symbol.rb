@@ -16,6 +16,6 @@ class CryptoSymbol
 	end
 
 	def deregister_not_in_symbols!(client_id, symbols)
-		CryptoSymbol.where(symbol_name: {'$nin': symbols}, client_ids: client_id).update_all({'$pull': client_ids: 'client_id'})
+		CryptoSymbol.where(symbol_name: {'$nin': symbols}, client_ids: client_id).update_all({'$pull': {client_ids: 'client_id'}})
 	end
 end
