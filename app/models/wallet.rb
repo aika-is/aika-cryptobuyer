@@ -13,7 +13,7 @@ class Wallet
 	field :encrypted_ak, type: String
 	field :encrypted_sk, type: String
 
-	field :inner_key, type: String, default: SecureRandom.hex(10)
+	field :inner_key, type: String, default: SecureRandom.hex(6)
 
 	field :strategy_id, type: String
 
