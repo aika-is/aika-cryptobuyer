@@ -9,6 +9,7 @@ module Indicators
 		end
 
 		def self.fetch_symbol_indicator client_id, symbol_name, time
+			puts "FETCHING #{symbol_name} - #{time}"
 			truncated_time = Time.at((time.to_i / self.interval)*self.interval)
 			ups = []
 			downs = []
