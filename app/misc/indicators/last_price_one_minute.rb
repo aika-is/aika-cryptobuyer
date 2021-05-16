@@ -17,6 +17,7 @@ module Indicators
 				to = from + self.interval
 				puts "FROM #{from}"
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
+				puts trades.to_json
 				i += 1
 			end
 			price = trades.last[:price]
