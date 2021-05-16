@@ -26,8 +26,8 @@ module Indicators
 
 				previous_price = last_price
 			end
-			ups_ratio = ups.reduce(:+) / 14
-			downs_ratio = downs.reduce(:+) / 14
+			ups_ratio = (ups.reduce(:+) || 0) / 14
+			downs_ratio = (downs.reduce(:+) || 0) / 14
 			rs = ups_ratio/downs_ratio
 			rsi = 100 - (100 / (1+rs))
 
