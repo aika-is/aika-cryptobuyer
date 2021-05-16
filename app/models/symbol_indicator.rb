@@ -52,7 +52,7 @@ class SymbolIndicator
 		truncated_time = truncated_time - interval if truncated_time + interval > Time.now
 		symbol_indicator = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: indicator_id, interval_time: truncated_time)
 		if symbol_indicator.nil?
-			symbol_indicator = SymbolIndicator.fetch_indicator(indicator_id).fetch_symbol_indicator wallet, symbol_name, time
+			symbol_indicator = SymbolIndicator.fetch_indicator(indicator_id).fetch_symbol_indicator wallet.client_id, symbol_name, time
 		end
 		return symbol_indicator
 	end

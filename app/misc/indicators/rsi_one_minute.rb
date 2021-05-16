@@ -8,14 +8,14 @@ module Indicators
 			"RSI_1MIN"
 		end
 
-		def self.fetch_symbol_indicator wallet, symbol_name, time
+		def self.fetch_symbol_indicator client_id, symbol_name, time
 			truncated_time = Time.at((time.to_i / self.interval)*self.interval)
 			ups = []
 			downs = []
 			previous_price = nil
 			(0..13).each do |i|
 				new_time = time - ((14-i)*self.interval)
-				last_price = SymbolIndicator.collect_for(wallet.client_id, symbol_name, "LAST_PRICE_1MIN", new_time)
+				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE_1MIN", new_time)
 				
 				if previous_price.present?
 					delta = previous_price - last_price 
@@ -30,7 +30,7 @@ module Indicators
 			rs = ups_ratio/downs_ratio
 			rsi = 100 - (100 / (1+rs))
 
-			SymbolIndicator.create!(client_id: wallet.client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: self.interval, interval_time: truncated_time, value: rsi)
+			SymbolIndicator.create!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: self.interval, interval_time: truncated_time, value: rsi)
 		end
 	end
 end
