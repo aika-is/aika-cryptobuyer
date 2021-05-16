@@ -46,6 +46,6 @@ class Wallet
 	end
 
 	def self.strategy_for strategy_id
-		return Strategies::RsiScalper if stategy_id == 'RSI_SCALPER'
+		return Strategies::RsiScalper if strategy_id == 'RSI_SCALPER'
 	end
 end
