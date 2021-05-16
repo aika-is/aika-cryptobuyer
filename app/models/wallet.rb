@@ -15,7 +15,7 @@ class Wallet
 
 	field :inner_key, type: String, default: SecureRandom.hex(10)
 
-	field :stategy_id, type: String
+	field :strategy_id, type: String
 
 	def ak
 		decrypt_text(self.inner_key, self.encrypted_ak)
