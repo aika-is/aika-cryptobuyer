@@ -16,7 +16,7 @@ class SymbolIndicator
 	field :delta, type: Float
 
 	def value= val
-		self.value = val
+		self[:value] = val
 		previous = self.previous_indicator
 		if previous.present?
 			self.ratio = self.value / previous.value

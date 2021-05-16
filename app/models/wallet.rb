@@ -26,11 +26,11 @@ class Wallet
 	end
 
 	def ak= value
-		self.ak = encrypt_text(self.inner_key, value)
+		self[:ak] = encrypt_text(self.inner_key, value)
 	end
 
 	def sk= value
-		self.sk = encrypt_text(self.inner_key, value)
+		self[:sk] = encrypt_text(self.inner_key, value)
 	end
 
 	def client
