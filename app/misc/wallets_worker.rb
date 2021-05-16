@@ -67,7 +67,7 @@ class WalletsWorker
 	end
 
 	def self.perform_purchases wallet
-		do
+		loop do
 			tale = wallet.strategy.perform_purchase wallet
 			break if tale.nil?
 		end
