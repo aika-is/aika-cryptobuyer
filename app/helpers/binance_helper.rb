@@ -65,8 +65,7 @@ module BinanceHelper
 
 	def collect_trades(trades)
 		price  = trades.first[:p].to_f
-		sample = trades.length
-		prices = trades.sample(sample).collect{|e| e[:p].to_f}
+		prices = trades.collect{|e| e[:p].to_f}
 		_min = prices.min
 		_max = prices.max
 		return {price: price, min: _min, max: _max}

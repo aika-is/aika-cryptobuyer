@@ -2,6 +2,8 @@ class PurchaseTale
 	include Mongoid::Document
 	include Mongoid::Timestamps
 	
+	field :wallet_id, type: String
+
 	field :symbol_name, type: String
 	field :price, type: Float
 
@@ -14,7 +16,7 @@ class PurchaseTale
 	field :sale_id, type: Integer
 	field :sale_completed, type: Boolean, default: false
 
-	field :state_snapshot, type: Hash
+	field :symbol_indicator, type: Hash
 
 	field :liquidated, type: Boolean, default: false	
 
@@ -28,5 +30,9 @@ class PurchaseTale
 
 	def self.goalFactor
 		return 1.01061
+	end
+
+	def self.open_tales wallet
+		self.where(wallet_id: wallet._id, sale_completed: false)
 	end
 end
