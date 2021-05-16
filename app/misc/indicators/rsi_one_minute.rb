@@ -18,7 +18,7 @@ module Indicators
 				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE_1MIN", new_time)
 				
 				if previous_price.present?
-					delta = previous_price - last_price 
+					delta = previous_price.value - last_price.value
 					ups << delta if delta > 0
 					downs << -delta if delta < 0
 				end
