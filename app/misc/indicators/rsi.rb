@@ -13,7 +13,7 @@ module Indicators
 			previous_price = nil
 			(0..13).each do |i|
 				new_time = time - ((14-i)*interval)
-				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE_1MIN", new_time)
+				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE_1MIN", new_time, interval)
 				
 				if previous_price.present?
 					delta = previous_price.value - last_price.value

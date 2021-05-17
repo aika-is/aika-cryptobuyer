@@ -29,7 +29,7 @@ class SymbolIndicator
 	end
 
 	def indicator
-		return SymbolIndicator.fecth_indicator(self.indicator_name)
+		return SymbolIndicator.fecth_indicator(self.indicator_id)
 	end
 
 	def previous_indicator force=false
