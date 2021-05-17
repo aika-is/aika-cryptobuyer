@@ -54,8 +54,8 @@ class WalletsProcessor
 	end
 
 	def self.update_indicators wallet
+		pool = IndicatorWorker.pool(size: 4)
 		wallet.strategy.indicators.each do |indicator_properties|
-			pool = IndicatorWorker.pool(size: 4)
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				pool.process_symbol_indicator(wallet.client_id, symbol.symbol_name, indicator_properties, Time.now)
 			end
