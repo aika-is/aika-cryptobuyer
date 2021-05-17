@@ -15,7 +15,7 @@ class ThreadPool
 	def check_availability
 		puts "CHECKING AVAILABILITY"
 		@threads = @threads.delete_if{|e| !e.alive?}
-		if @threads.length-1 < @size
+		if @threads.length-1 < @size && @workers.length > 0
 			@threads << Thread.new {
 				worker = @workers.shift
 				worker.perform
