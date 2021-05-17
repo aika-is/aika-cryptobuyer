@@ -55,5 +55,3 @@ gem 'dalli'
 
 #gem 'mongoid'
 gem 'mongoid', '~> 7.2.0'
-
-gem 'celluloid', '~> 0.17.3'

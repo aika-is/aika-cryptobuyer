@@ -54,10 +54,11 @@ class WalletsProcessor
 	end
 
 	def self.update_indicators wallet
-		pool = IndicatorWorker.pool(size: 4)
+		pool = ThreadPool.new()
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
-				pool.process_symbol_indicator(wallet.client_id, symbol.symbol_name, indicator_properties, Time.now)
+				puts "APPENDING #{symbol.symbol_name}"
+				pool.append(IndicatorWorker.new(wallet.client_id, symbol.symbol_name, indicator_properties, Time.now))
 			end
 		end
 	end
