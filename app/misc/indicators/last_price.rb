@@ -12,7 +12,7 @@ module Indicators
 			while trades.length == 0
 				from = Time.at((time.to_i / interval)*interval)-(i*interval)
 				to = from + interval
-				puts "FROM #{symbol_name} - #{from}, #{to}"
+				#puts "FROM #{symbol_name} - #{from}, #{to}"
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
 				i += 1
 			end
