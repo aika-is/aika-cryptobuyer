@@ -31,6 +31,7 @@ class SymbolIndicator
 	def ratio
 		if self[:ratio].nil?
 			puts "MISSING RATIO"
+
 			previous = self.previous_indicator true
 			self.redelta!
 		end
@@ -40,6 +41,7 @@ class SymbolIndicator
 	def delta
 		if self[:delta].nil?
 			puts "MISSING DELTA"
+			
 			previous = self.previous_indicator true
 			self.redelta!
 		end
