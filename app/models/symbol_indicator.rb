@@ -48,7 +48,6 @@ class SymbolIndicator
 
 	def self.collect_for(client_id, symbol_name, indicator_id, time, interval)
 		puts "COLLECTING #{symbol_name} - #{indicator_id} - #{time}"
-
 		truncated_time = Time.at(((time.to_i / interval)*interval))
 		truncated_time = truncated_time - interval if truncated_time + interval > Time.now
 		symbol_indicator = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: indicator_id, interval_time: truncated_time, interval: interval)
