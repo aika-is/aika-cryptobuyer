@@ -1,4 +1,4 @@
-class WalletsWorker
+class WalletsProcessor
 	def self.work_wallets wallets, total_time
 		max_loop = 0
 		start = Time.now
@@ -55,18 +55,9 @@ class WalletsWorker
 
 	def self.update_indicators wallet
 		wallet.strategy.indicators.each do |indicator_properties|
-			threads = 0
+			worker_pool = IndicatorWorker.pool(size: 2)
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
-				while threads >= 2
-					sleep(1.seconds)
-					puts "WAITING"
-				end
-				Thread.new do
-					threads += 1
-					indicator = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, indicator_properties[:indicator_id], Time.now, indicator_properties[:interval])
-					puts "FINISHED THREAD #{symbol.symbol_name}"
-					threads -= 1
-				end
+				worker_pool.process_symbol_indicator(wallet.client_id, symbol.symbol_name, indicator_properties, time)
 			end
 		end
 	end
