@@ -23,7 +23,6 @@ module Strategies
 			order_amount = [(assets_value / wallet.positions_quantity).round(2), wallet.positions_quantity].max
 			cash = wallet.client.get_available_cash wallet
 
-
 			if cash > order_amount
 				not_in = wallet.client.get_positioned_assets(wallet).collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
 				symbol_indicator = pick_symbol(wallet, not_in)
