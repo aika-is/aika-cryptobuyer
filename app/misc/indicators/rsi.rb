@@ -6,8 +6,9 @@ module Indicators
 		end
 
 		def self.fetch_symbol_indicator client_id, symbol_name, time, interval
-			#puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time}"
 			truncated_time = Time.at((time.to_i / interval)*interval)
+			truncated_time = truncated_time - interval if truncated_time + interval > Time.now
+			puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{truncated_time}"
 			ups = []
 			downs = []
 			previous_price = nil

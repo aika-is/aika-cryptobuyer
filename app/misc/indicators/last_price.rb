@@ -6,12 +6,14 @@ module Indicators
 		end
 
 		def self.fetch_symbol_indicator client_id, symbol_name, time, interval
-			#puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time}"
+			truncated_time = Time.at((time.to_i / interval)*interval)
+			truncated_time = truncated_time - interval if truncated_time + interval > Time.now
 			i = 0
 			trades = []
 			while trades.length == 0
-				from = Time.at((time.to_i / interval)*interval)-(i*interval)
+				from = truncated_time-(i*interval)
 				to = from + interval
+				puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{from}"
 				#puts "FROM #{symbol_name} - #{from}, #{to}"
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
 				i += 1
