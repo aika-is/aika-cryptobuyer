@@ -72,7 +72,7 @@ class WalletsWorker
 	end
 
 	def self.track_value wallet
-		wallet_assets = get_assets wallet
+		wallet_assets = wallet.client.get_assets wallet
 		wallet_value = wallet_assets.collect{|e| e[:value]}.reduce(:+)
 		WalletTrack.create!(wallet_id: wallet._id, value: wallet_value)
 	end
