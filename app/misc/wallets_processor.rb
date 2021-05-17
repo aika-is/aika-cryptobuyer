@@ -27,6 +27,12 @@ class WalletsProcessor
 		end
 	end
 
+	def self.heat_wallets wallets
+		wallets.each do |wallet|
+			self.relaunch_wallet wallet
+		end
+	end
+
 	def self.relaunch_wallet wallet
 		Thread.new {
 			self.update_indicators wallet
