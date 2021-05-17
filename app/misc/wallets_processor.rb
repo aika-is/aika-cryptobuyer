@@ -27,10 +27,10 @@ class WalletsProcessor
 		end
 	end
 
-	def self.relaunch_wallet
+	def self.relaunch_wallet wallet
 		Thread.new {
 			self.update_indicators wallet
-			self.relaunch_wallet
+			self.relaunch_wallet wallet
 		}
 	end
 
