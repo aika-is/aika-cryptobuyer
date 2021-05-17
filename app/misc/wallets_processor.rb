@@ -3,6 +3,9 @@ class WalletsProcessor
 		max_loop = 0
 		start = Time.now
 		remaining = total_time
+		wallets.each do |wallet|
+			self.relaunch_wallet wallet
+		end
 		while remaining > max_loop
 			wallets.each do |wallet|
 				loop_start = Time.now
@@ -10,7 +13,6 @@ class WalletsProcessor
 				self.sanitize_tales wallet
 				self.check_staleness wallet
 				self.discover_symbols wallet
-				self.update_indicators wallet
 				self.track_value wallet
 				self.perform_purchases wallet
 
@@ -23,6 +25,13 @@ class WalletsProcessor
 				return if remaining < max_loop
 			end
 		end
+	end
+
+	def self.relaunch_wallet
+		Thread.new {
+			self.update_indicators wallet
+			self.relaunch_wallet
+		}
 	end
 
 	def self.sanitize_tales wallet
