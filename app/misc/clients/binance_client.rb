@@ -69,7 +69,7 @@ module Clients
 		end
 
 		def self.is_open_order? wallet, symbol_name, order_id
-			order = get_order(tale.symbol_name, tale.sale_id)
+			order = get_order(symbol_name, order_id)
 			return ['FILLED', 'CANCELED'].include?(order[:status])
 		end
 
