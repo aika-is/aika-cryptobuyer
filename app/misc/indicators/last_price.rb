@@ -19,7 +19,9 @@ module Indicators
 				i += 1
 			end
 			price = trades.last[:price]
-			SymbolIndicator.create!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: from, value: price)
+			s = SymbolIndicator.find_or_create_by!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: from)
+			s.set(value: price)
+			s
 		end
 	end
 end

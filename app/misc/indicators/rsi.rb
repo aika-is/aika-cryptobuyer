@@ -13,7 +13,7 @@ module Indicators
 			downs = []
 			previous_price = nil
 			(0..13).each do |i|
-				new_time = time - ((14-i)*interval)
+				new_time = truncated_time - ((14-i)*interval)
 				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE", new_time, interval)
 				
 				if previous_price.present?
@@ -30,7 +30,9 @@ module Indicators
 			rs = ups_ratio/downs_ratio
 			rsi = 100 - (100 / (1+rs))
 
-			SymbolIndicator.create!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: truncated_time, value: rsi)
+			s = SymbolIndicator.find_or_create_by!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: truncated_time)
+			s.set(value: rsi)
+			s
 		end
 	end
 end
