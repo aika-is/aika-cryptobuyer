@@ -13,7 +13,7 @@ module Clients
 		end
 
 		def self.get_symbol symbol_name
-			self.get_symbols.select{|e| e[:symbol] == symbol_name}
+			self.get_symbols.find{|e| e[:symbol] == symbol_name}
 		end
 
 		def self.get_prices
