@@ -24,7 +24,7 @@ module Strategies
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
-				not_in = wallet.client.get_positioned_assets.collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
+				not_in = wallet.client.get_positioned_assets(wallet).collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
 				symbol_indicator = pick_symbol(not_in)
 				
 				price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
