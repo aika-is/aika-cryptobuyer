@@ -30,6 +30,7 @@ class WalletsProcessor
 	def self.relaunch_wallet wallet
 		Thread.new {
 			self.update_indicators wallet
+			sleep(2.minutes)
 			self.relaunch_wallet wallet
 		}
 	end
