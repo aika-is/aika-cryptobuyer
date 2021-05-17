@@ -42,8 +42,8 @@ class SymbolIndicator
 	end
 
 	def self.fetch_indicator indicator_id
-		return Indicators::RsiOneMinute if indicator_id == 'RSI'
-		return Indicators::LastPriceOneMinute if indicator_id == 'LAST_PRICE'
+		return Indicators::Rsi if indicator_id == 'RSI'
+		return Indicators::LastPrice if indicator_id == 'LAST_PRICE'
 	end
 
 	def self.collect_for(client_id, symbol_name, indicator_id, time, interval)
