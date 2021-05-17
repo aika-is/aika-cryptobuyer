@@ -55,8 +55,8 @@ class WalletsWorker
 
 	def self.update_indicators wallet
 		wallet.strategy.indicators.each do |indicator_properties|
+			threads = 0
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
-				threads = 0
 				while threads >= 2
 					sleep(1000)
 					puts "WAITING"
