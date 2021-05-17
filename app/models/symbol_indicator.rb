@@ -19,9 +19,31 @@ class SymbolIndicator
 		self[:value] = val
 		previous = self.previous_indicator
 		if previous.present?
-			self.ratio = self.value / previous.value
-			self.delta = self.value - previous.value
+			self.redelta!
 		end
+	end
+
+	def redelta!
+		self.set(ratio: self.value / previous.value)
+		self.set(delta: self.value - previous.value)
+	end
+
+	def ratio
+		if self[:ratio].nil?
+			puts "MISSING RATIO"
+			previous = self.previous_indicator true
+			self.redelta!
+		end
+		return self[:ratio]
+	end
+
+	def delta
+		if self[:delta].nil?
+			puts "MISSING DELTA"
+			previous = self.previous_indicator true
+			self.redelta!
+		end
+		return self[:delta]
 	end
 
 	def ascending?
@@ -34,11 +56,11 @@ class SymbolIndicator
 
 	def previous_indicator force=false
 		time = self.interval_time - self.interval		
-		if force
-			SymbolIndicator.collect_for(self.client_id, self.symbol_name, self.indicator_id, self.time)
-		else
-			SymbolIndicator.find_by(client_id: self.client_id, symbol_name: self.symbol_name, indicator_id: self.indicator_id, interval_time: time)
+		symbol = SymbolIndicator.find_by(client_id: self.client_id, symbol_name: self.symbol_name, indicator_id: self.indicator_id, interval_time: time, interval: self.interval)
+		if force && symbol.nil?
+			symbol = SymbolIndicator.collect_for(self.client_id, self.symbol_name, self.indicator_id, self.time, self.interval)
 		end
+		return symbol
 	end
 
 	def self.fetch_indicator indicator_id
