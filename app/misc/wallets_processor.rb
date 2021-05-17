@@ -38,7 +38,7 @@ class WalletsProcessor
 	def self.sanitize_tales wallet
 		PurchaseTale.open_tales(wallet).each do |tale|
 			if tale.sale_id.present?
-				if !is_open_order?(wallet, tale.symbol_name, tale.sale_id)
+				if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.sale_id)
 					tale.sale_completed = true
 					tale.save
 				end
