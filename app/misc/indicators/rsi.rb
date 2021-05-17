@@ -14,7 +14,6 @@ module Indicators
 			previous_price = nil
 			(0..13).each do |i|
 				new_time = truncated_time - ((14-i)*interval)
-				puts "NEW TIME #{new_time}"
 				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE", new_time, interval)
 				
 				if previous_price.present?
