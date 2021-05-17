@@ -17,15 +17,15 @@ class SymbolIndicator
 
 	def value= val
 		self[:value] = val
-		previous = self.previous_indicator
-		if previous.present?
-			self.redelta!
-		end
+		self.redelta!
 	end
 
 	def redelta!
-		self.set(ratio: self.value / previous.value)
-		self.set(delta: self.value - previous.value)
+		previous = self.previous_indicator
+		if previous.present?
+			self.set(ratio: self.value / previous.value)
+			self.set(delta: self.value - previous.value)
+		end
 	end
 
 	def ratio
