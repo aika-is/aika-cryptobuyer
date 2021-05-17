@@ -1,4 +1,6 @@
 require 'celluloid/current'
+require "celluloid/autostart"
+require "celluloid/pool" 
 
 class IndicatorWorker
 	include Celluloid
