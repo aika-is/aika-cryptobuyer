@@ -44,7 +44,7 @@ module Clients
 		end
 
 		def self.get_positioned_assets wallet
-			self.get_assets.select{|e| e[:locked].to_f > 0}
+			self.get_assets(wallet).select{|e| e[:locked].to_f > 0}
 		end
 
 		def self.get_available_cash wallet
