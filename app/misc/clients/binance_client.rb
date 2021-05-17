@@ -35,7 +35,7 @@ module Clients
 		def self.get_assets wallet
 			timestamp = Time.now.to_i*1000
 			params = {timestamp: timestamp}
-			params[:signature] = self.get_signature(params)
+			params[:signature] = self.get_signature(wallet, params)
 			response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': wallet.ak})
 			assets = JSON.parse(response.body, symbolize_names: true)[:balances]
 
