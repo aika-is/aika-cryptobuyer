@@ -6,7 +6,7 @@ module Indicators
 		end
 
 		def self.fetch_symbol_indicator client_id, symbol_name, time, interval
-			puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time}"
+			#puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time}"
 			i = 0
 			trades = []
 			while trades.length == 0

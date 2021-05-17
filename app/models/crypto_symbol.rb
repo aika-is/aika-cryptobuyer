@@ -12,7 +12,7 @@ class CryptoSymbol
 	end
 
 	def self.symbols_for(client_id)
-		CryptoSymbol.where(client_ids: client_id)
+		CryptoSymbol.where(client_ids: client_id).sort(symbol_name: 1)
 	end
 
 	def self.deregister_not_in_symbols!(client_id, symbols)

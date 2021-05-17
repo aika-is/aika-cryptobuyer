@@ -28,6 +28,7 @@ module Strategies
 				symbol_indicator = pick_symbol(wallet, not_in)
 				
 				if symbol_indicator.present?
+					puts "STARTING PURCHASE ATTEMPT"
 					price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
 					order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
 
@@ -44,6 +45,7 @@ module Strategies
 
 					tale.sale_id = order[:orderId]
 					tale.save
+					puts "FINISHED PURCHASE - #{tale.symbol_name}"
 				else
 					puts "NO GOOD TALE"
 				end
