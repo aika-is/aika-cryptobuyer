@@ -1,4 +1,3 @@
-require 'celluloid/current'
 require "celluloid/autostart"
 require "celluloid/pool" 
 
