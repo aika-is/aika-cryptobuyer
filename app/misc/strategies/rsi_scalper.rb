@@ -26,7 +26,7 @@ module Strategies
 
 			if cash > order_amount
 				not_in = wallet.client.get_positioned_assets(wallet).collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
-				symbol_indicator = pick_symbol(not_in)
+				symbol_indicator = pick_symbol(wallet, not_in)
 				
 				price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
 				order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
