@@ -50,15 +50,15 @@ class WalletsProcessor
 	end
 
 	def self.discover_symbols wallet
-		symbols = wallet.client.get_symbols wallet
+		symbols = wallet.client.get_symbols(wallet).collect{|e| e[:symbol]}
 		symbols.each do |symbol|
-			CryptoSymbol.register_symbol!(wallet.client_id, symbol[:symbol])
+			CryptoSymbol.register_symbol!(wallet.client_id, symbol)
 		end
 		CryptoSymbol.deregister_not_in_symbols!(wallet.client_id, symbols)
 	end
 
 	def self.update_indicators wallet
-		pool = ThreadPool.new(3)
+		pool = ThreadPool.new(4)
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				puts "APPENDING #{symbol.symbol_name}"

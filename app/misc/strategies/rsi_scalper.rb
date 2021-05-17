@@ -27,22 +27,26 @@ module Strategies
 				not_in = wallet.client.get_positioned_assets(wallet).collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
 				symbol_indicator = pick_symbol(wallet, not_in)
 				
-				price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
-				order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
+				if symbol_indicator.present?
+					price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
+					order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
 
-				price = order[:fills].collect{|e| e[:price].to_f}.reduce(:+)/order[:fills].length
-				tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], symbol_indicator: symbol_indicator.as_json.except!("_id"))
+					price = order[:fills].collect{|e| e[:price].to_f}.reduce(:+)/order[:fills].length
+					tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], symbol_indicator: symbol_indicator.as_json.except!("_id"))
 
-				remote_symbol = wallet.client.get_symbol(tale.symbol_name)
-				quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
-				precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
-				quantity = quantity.floor(precision)
-				precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
-				goal = tale.goal.round(precision)
-				order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{precision}f" % goal)
+					remote_symbol = wallet.client.get_symbol(tale.symbol_name)
+					quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
+					precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+					quantity = quantity.floor(precision)
+					precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
+					goal = tale.goal.round(precision)
+					order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{precision}f" % goal)
 
-				tale.sale_id = order[:orderId]
-				tale.save
+					tale.sale_id = order[:orderId]
+					tale.save
+				else
+					puts "NO GOOD TALE"
+				end
 			else
 				puts "NO MONEY LEFT"
 			end
