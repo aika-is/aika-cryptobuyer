@@ -51,8 +51,8 @@ class WalletsProcessor
 
 	def self.discover_symbols wallet
 		symbols = wallet.client.get_symbols wallet
-		symbols.each do |symbol_name|
-			CryptoSymbol.register_symbol!(wallet.client_id, symbol_name)
+		symbols.each do |symbol|
+			CryptoSymbol.register_symbol!(wallet.client_id, symbol[:symbol])
 		end
 		CryptoSymbol.deregister_not_in_symbols!(wallet.client_id, symbols)
 	end

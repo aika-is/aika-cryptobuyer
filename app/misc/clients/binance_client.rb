@@ -7,13 +7,13 @@ module Clients
 
 			symbols = symbols[:symbols]
 			if wallet.present?
-				symbols = symbols.select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol]) && e[:status] == 'TRADING'}.collect{ |e| e[:symbol] }
+				symbols = symbols.select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol]) && e[:status] == 'TRADING'}
 			end
 			return symbols
 		end
 
 		def self.get_symbol symbol_name
-			self.get_symbols.select{|e| e[:symbol_name] == symbol_name}
+			self.get_symbols.select{|e| e[:symbol] == symbol_name}
 		end
 
 		def self.get_prices
