@@ -84,7 +84,7 @@ module Clients
 		def self.perform_market_buy(wallet, symbol_name, current_order_amount)
 			timestamp = Time.now.to_i*1000
 			params = {symbol: symbol_name, side: 'BUY', type: 'MARKET', quoteOrderQty: current_order_amount, timestamp: timestamp}
-			params[:signature] = get_signature(params)
+			params[:signature] = get_signature(wallet, params)
 			begin
 				response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
 			rescue => e
