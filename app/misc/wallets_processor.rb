@@ -2,22 +2,26 @@ class WalletsProcessor
 	def self.work_wallets wallets, total_time
 		max_loop = 0
 		start = Time.now
-		wallets.each do |wallet|
-			loop_start = Time.now
+		remaining = total_time
+		while remaining > max_loop
+			wallets.each do |wallet|
+				loop_start = Time.now
 
-			self.sanitize_tales wallet
-			self.check_staleness wallet
-			self.discover_symbols wallet
-			self.update_indicators wallet
-			self.track_value wallet
+				self.sanitize_tales wallet
+				self.check_staleness wallet
+				self.discover_symbols wallet
+				self.update_indicators wallet
+				self.track_value wallet
+				self.perform_purchases wallet
 
-			loop_time = (Time.now - loop_start)
-			max_loop = [max_loop, loop_time].max
-			remaining = total_time - (Time.now - start)
+				loop_time = (Time.now - loop_start)
+				max_loop = [max_loop, loop_time].max
+				remaining = total_time - (Time.now - start)
 
-			self.log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.exchange_client_id}"]})
+				self.log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.exchange_client_id}"]})
 
-			return if remaining < max_loop
+				return if remaining < max_loop
+			end
 		end
 	end
 

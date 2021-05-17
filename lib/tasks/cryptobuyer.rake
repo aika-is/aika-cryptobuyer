@@ -8,5 +8,6 @@ namespace :cryptobuyer do
 		#refresh_states
 		#track_value
 		#order_purchase
+		#WalletsProcessor.work_wallets Wallet.all, 10.minutes
 	end
 end
