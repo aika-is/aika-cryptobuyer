@@ -57,7 +57,7 @@ class WalletsProcessor
 		wallet.strategy.indicators.each do |indicator_properties|
 			worker_pool = IndicatorWorker.pool(size: 2)
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
-				worker_pool.process_symbol_indicator(wallet.client_id, symbol.symbol_name, indicator_properties, time)
+				worker_pool.process_symbol_indicator(wallet.client_id, symbol.symbol_name, indicator_properties, Time.now)
 			end
 		end
 	end
