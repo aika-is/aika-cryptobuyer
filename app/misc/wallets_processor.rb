@@ -51,7 +51,7 @@ class WalletsProcessor
 
 	def self.check_staleness wallet
 		if wallet.strategy.is_stale? wallet
-			liquidation = pick_stale_to_liquidate wallet
+			liquidation = wallet.strategy.pick_stale_to_liquidate wallet
 			wallet.client.liquidate wallet, liquidation
 			log("WALLET STALENESS DETECTED", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "STRATEGY_#{wallet.bidding_stategy_id}"]}, {liquidation: liquidation})
 		else
