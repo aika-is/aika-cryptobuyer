@@ -56,9 +56,16 @@ class WalletsWorker
 	def self.update_indicators wallet
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
+				threads = 0
+				while threads >= 2
+					sleep(1000)
+					puts "WAITING"
+				end
 				Thread.new do
+					threads += 1
 					indicator = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, indicator_properties[:indicator_id], Time.now, indicator_properties[:interval])
 					puts "FINISHED THREAD #{symbol.symbol_name}"
+					threads -= 1
 				end
 			end
 		end
