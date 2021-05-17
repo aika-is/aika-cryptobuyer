@@ -15,7 +15,7 @@ module Indicators
 			to = from + interval
 			trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
 			price = trades.last[:price] if trades.length > 0
-			while price.present?
+			while !price.present?
 				from = truncated_time-(i*interval)
 				puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{from}"
 				#puts "FROM #{symbol_name} - #{from}, #{to}"
