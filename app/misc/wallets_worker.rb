@@ -58,7 +58,7 @@ class WalletsWorker
 			threads = 0
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				while threads >= 2
-					sleep(1000)
+					sleep(1.seconds)
 					puts "WAITING"
 				end
 				Thread.new do
