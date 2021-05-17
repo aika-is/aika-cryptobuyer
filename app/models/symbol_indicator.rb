@@ -30,7 +30,7 @@ class SymbolIndicator
 
 	def ratio
 		if self[:ratio].nil?
-			puts "MISSING RATIO"
+			puts "MISSING RATIO #{self.symbol_name}"
 
 			previous = self.previous_indicator true
 			self.redelta!
@@ -40,8 +40,8 @@ class SymbolIndicator
 
 	def delta
 		if self[:delta].nil?
-			puts "MISSING DELTA"
-			
+			puts "MISSING DELTA #{self.symbol_name}"
+
 			previous = self.previous_indicator true
 			self.redelta!
 		end
@@ -60,7 +60,7 @@ class SymbolIndicator
 		time = self.interval_time - self.interval		
 		symbol = SymbolIndicator.find_by(client_id: self.client_id, symbol_name: self.symbol_name, indicator_id: self.indicator_id, interval_time: time, interval: self.interval)
 		if force && symbol.nil?
-			symbol = SymbolIndicator.collect_for(self.client_id, self.symbol_name, self.indicator_id, self.time, self.interval)
+			symbol = SymbolIndicator.collect_for(self.client_id, self.symbol_name, self.indicator_id, time, self.interval)
 		end
 		return symbol
 	end
