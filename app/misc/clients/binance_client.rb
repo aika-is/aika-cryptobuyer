@@ -29,7 +29,7 @@ module Clients
 			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
 			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params})
 			trades = JSON.parse(response.body, symbolize_names: true)
-			trades.collect{|e| {price: e[:p].to_f, quantity: e[:q].to_f, time: Time.at(e[:T]/1000)}}.reverse
+			trades.collect{|e| {price: e[:p].to_f, quantity: e[:q].to_f, time: Time.at(e[:T]/1000)}}
 		end
 
 		def self.get_assets wallet

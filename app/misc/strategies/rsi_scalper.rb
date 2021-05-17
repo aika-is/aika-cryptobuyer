@@ -2,7 +2,7 @@ module Strategies
 	class RsiScalper
 
 		def self.indicators
-			['RSI_1MIN']
+			[{indicator_id: 'RSI', interval: 120]
 		end
 
 		def self.is_stale? wallet

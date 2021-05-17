@@ -54,9 +54,9 @@ class WalletsWorker
 	end
 
 	def self.update_indicators wallet
-		wallet.strategy.indicators.each do |indicator_id|
+		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
-				indicator = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, indicator_id, Time.now)
+				indicator = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, indicator_properties[:indicator_id], Time.now, indicator_properties[:interval])
 			end
 		end
 	end

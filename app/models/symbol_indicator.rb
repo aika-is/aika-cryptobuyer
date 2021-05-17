@@ -42,19 +42,18 @@ class SymbolIndicator
 	end
 
 	def self.fetch_indicator indicator_id
-		return Indicators::RsiOneMinute if indicator_id == 'RSI_1MIN'
-		return Indicators::LastPriceOneMinute if indicator_id == 'LAST_PRICE_1MIN'
+		return Indicators::RsiOneMinute if indicator_id == 'RSI'
+		return Indicators::LastPriceOneMinute if indicator_id == 'LAST_PRICE'
 	end
 
-	def self.collect_for(client_id, symbol_name, indicator_id, time)
+	def self.collect_for(client_id, symbol_name, indicator_id, time, interval)
 		puts "COLLECTING #{symbol_name} - #{indicator_id} - #{time}"
 
-		interval = SymbolIndicator.fetch_indicator(indicator_id).interval
 		truncated_time = Time.at(((time.to_i / interval)*interval))
 		truncated_time = truncated_time - interval if truncated_time + interval > Time.now
-		symbol_indicator = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: indicator_id, interval_time: truncated_time)
+		symbol_indicator = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: indicator_id, interval_time: truncated_time, interval: interval)
 		if symbol_indicator.nil?
-			symbol_indicator = SymbolIndicator.fetch_indicator(indicator_id).fetch_symbol_indicator client_id, symbol_name, time
+			symbol_indicator = SymbolIndicator.fetch_indicator(indicator_id).fetch_symbol_indicator client_id, symbol_name, time, interval
 		end
 		return symbol_indicator
 	end
