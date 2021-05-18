@@ -23,6 +23,7 @@ class SymbolIndicator
 	def redelta!
 		previous = self.previous_indicator
 		if previous.present?
+			puts "SELF: #{self.value} - PREVIOUS: #{previous.value}"
 			self.ratio = self.value / previous.value
 			self.delta = self.value - previous.value
 			self.save
