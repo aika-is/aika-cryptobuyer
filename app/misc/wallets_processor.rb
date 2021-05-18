@@ -34,11 +34,7 @@ class WalletsProcessor
 	end
 
 	def self.relaunch_wallet wallet
-		Thread.new {
-			self.update_indicators wallet
-			sleep(2.minutes)
-			self.relaunch_wallet wallet
-		}
+		self.update_indicators wallet
 	end
 
 	def self.sanitize_tales wallet
@@ -79,7 +75,7 @@ class WalletsProcessor
 	end
 
 	def self.update_indicators wallet
-		pool = ThreadPool.new(4)
+		pool = ThreadPool.new(4, true)
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				puts "APPENDING #{symbol.symbol_name}"

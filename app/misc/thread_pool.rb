@@ -1,10 +1,12 @@
 class ThreadPool
 
-	def initialize(size = 2)
+	def initialize(size = 2, restart = false)
 		@size = size
 		@threads = []
 		@workers = []
 		@pool_id = rand(999)
+		@restart = restart
+		@evicted = []
 	end
 
 	def append(worker)
@@ -14,6 +16,10 @@ class ThreadPool
 	end
 
 	def check_availability
+		if @workers.length == 0 && restart
+			puts "RESTARTING"
+			@workers += @evicted
+		end
 		@threads = @threads.delete_if{|e| !e.alive?}
 		if @threads.length-1 < @size && @workers.length > 0
 			@threads << Thread.new {
@@ -22,6 +28,7 @@ class ThreadPool
 					worker.perform
 					check_availability
 				end
+				@evicted << worker
 			}
 		end
 	end
