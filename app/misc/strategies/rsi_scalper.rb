@@ -67,7 +67,7 @@ module Strategies
 				puts "ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
 
 				return best_candidate if best_candidate.present? && best_candidate.value < e.value && elegible
-				puts "NEW BEST CANDIDATE"
+				puts "NEW BEST CANDIDATE" if elegible
 				best_candidate = e if elegible
 			end
 			return best_candidate
