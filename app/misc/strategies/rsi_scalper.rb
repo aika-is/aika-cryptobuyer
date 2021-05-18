@@ -62,7 +62,7 @@ module Strategies
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
 				e = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
-				puts "ELEGIBLE? - #{e.symbol_indicator} - #{(e.value < 30 && e.delta > 0)}"
+				puts "ELEGIBLE? - #{e.symbol_name} - #{(e.value < 30 && e.delta > 0)}"
 			end
 			return symbols.select{|e| e.value < 30 && e.delta > 0}.sort_by{|e| e.value}.first 
 		end
