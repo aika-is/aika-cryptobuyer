@@ -16,13 +16,9 @@ module Indicators
 				new_time = truncated_time - ((14-i)*interval)
 				last_price = SymbolIndicator.collect_for(client_id, symbol_name, "LAST_PRICE", new_time, interval)
 				
-				if previous_price.present?
-					delta = previous_price.value - last_price.value
-					ups << delta if delta > 0
-					downs << -delta if delta < 0
-				end
-
-				previous_price = last_price
+				delta = last_price.delta
+				ups << delta if delta > 0
+				downs << -delta if delta < 0
 			end
 			ups_ratio = (ups.reduce(:+) || 0) / 14
 			downs_ratio = (downs.reduce(:+) || 0) / 14
