@@ -16,7 +16,7 @@ class ThreadPool
 	end
 
 	def check_availability
-		if @workers.length == 0 && restart
+		if @workers.length == 0 && @restart
 			puts "RESTARTING"
 			@workers += @evicted
 		end
