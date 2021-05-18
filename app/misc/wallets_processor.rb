@@ -79,7 +79,7 @@ class WalletsProcessor
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet.client_id).each do |symbol|
 				puts "APPENDING #{symbol.symbol_name}"
-				pool.append(IndicatorWorker.new(wallet.client_id, symbol.symbol_name, indicator_properties, Time.now))
+				pool.append(IndicatorWorker.new(wallet.client_id, symbol.symbol_name, indicator_properties))
 			end
 		end
 	end
