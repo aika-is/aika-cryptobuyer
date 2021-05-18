@@ -58,7 +58,11 @@ module Strategies
 
 		def self.pick_symbol wallet, not_in=[]
 			symbols = CryptoSymbol.symbols_for(wallet.client_id).to_a.shuffle
-			return symbols.collect{ |symbol| SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval]) }.select{|e| e.value < 30 && e.delta > 0}.sort_by{|e| e.value}.first 
+
+			symbols = symbols.each_with_index.collect do |symbol, i| 
+				puts "#{i}/#{symbols.length}"
+				SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval]) }
+			return symbols.select{|e| e.value < 30 && e.delta > 0}.sort_by{|e| e.value}.first 
 		end
 	end
 end
