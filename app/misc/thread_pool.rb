@@ -16,9 +16,9 @@ class ThreadPool
 	def launch_thread
 		worker = @workers.shift
 		if worker.present?
-			@threads << Thread.new(worker) {|worker|
-				if worker.present?
-					worker.perform
+			@threads << Thread.new(worker) {|w|
+				if w.present?
+					w.perform
 				end
 				launch_thread
 			}
