@@ -14,7 +14,7 @@ module Indicators
 			from = truncated_time-(i*interval)
 			to = from + interval
 			s = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: from)
-			if s.nil? || s.price.nil?
+			if s.nil? || s.value.nil?
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
 				price = trades.last[:price] if trades.length > 0
 				while !price.present?
