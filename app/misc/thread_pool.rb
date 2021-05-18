@@ -22,11 +22,11 @@ class ThreadPool
 		end
 		@threads = @threads.delete_if{|e| !e.alive?}
 		if @threads.length-1 < @size && @workers.length > 0
-			@threads << Thread.new {
-				worker = @workers.shift
+			worker = @workers.shift
+			@evicted << worker
+			@threads << Thread.new(worker) {|worker|
 				if worker.present?
 					worker.perform
-					@evicted << worker
 				end
 				check_availability
 			}
