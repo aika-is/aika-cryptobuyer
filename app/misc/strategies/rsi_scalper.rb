@@ -59,12 +59,18 @@ module Strategies
 		def self.pick_symbol wallet, not_in=[]
 			symbols = CryptoSymbol.symbols_for(wallet.client_id).to_a.shuffle
 
+			best_candidate = nil
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
 				e = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
-				puts "ELEGIBLE? - #{e.symbol_name} - #{(e.value < 30 && e.delta > 0)}"
+				elegible = (e.value < 30 && e.delta > 0)
+				puts "ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
+
+				return best_candidate if best_candidate.present? && best_candidate.value < e.value && elegible
+				puts "NEW BEST CANDIDATE"
+				best_candidate = e if elegible
 			end
-			return symbols.select{|e| e.value < 30 && e.delta > 0}.sort_by{|e| e.value}.first 
+			return best_candidate
 		end
 	end
 end
