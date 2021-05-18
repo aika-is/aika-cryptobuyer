@@ -18,7 +18,7 @@ class ThreadPool
 	def check_availability
 		if @workers.length == 0 && @restart
 			puts "RESTARTING"
-			@workers += @evicted
+			@workers = @workers + @evicted
 		end
 		@threads = @threads.delete_if{|e| !e.alive?}
 		if @threads.length-1 < @size && @workers.length > 0
@@ -26,9 +26,9 @@ class ThreadPool
 				worker = @workers.shift
 				if worker.present?
 					worker.perform
-					check_availability
+					@evicted << worker
 				end
-				@evicted << worker
+				check_availability
 			}
 		end
 	end
