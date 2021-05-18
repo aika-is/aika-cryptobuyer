@@ -27,7 +27,8 @@ module Indicators
 			rsi = 100 - (100 / (1+rs))
 
 			s = SymbolIndicator.find_or_create_by!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: truncated_time)
-			s.set(value: rsi)
+			s.value = rsi
+			s.save
 			s
 		end
 	end

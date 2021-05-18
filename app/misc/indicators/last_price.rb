@@ -17,7 +17,7 @@ module Indicators
 			if s.nil? || s.value.nil?
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
 				price = trades.last[:price] if trades.length > 0
-				while !price.present?
+				if !price.present?
 					i += 1
 					from = truncated_time-(i*interval)
 					puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{from}"
@@ -26,7 +26,8 @@ module Indicators
 					price = symbol.value if symbol.present?
 				end
 				s = SymbolIndicator.find_or_create_by!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: from)
-				s.set(value: price)
+				s.value = price
+				s.save
 			end
 			s
 		end

@@ -143,6 +143,6 @@ production:
         timeout: 15
         max_pool_size: 20
         read:
-          mode: :<%= (ENV['MONGO_READ_MODE'] || 'secondary_preferred') %>
+          mode: primary
   options:
     raise_not_found_error: false
