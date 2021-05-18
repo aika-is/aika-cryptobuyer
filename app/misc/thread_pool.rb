@@ -18,7 +18,13 @@ class ThreadPool
 		if worker.present?
 			@threads << Thread.new(worker) {|w|
 				if w.present?
-					w.perform
+					begin
+						w.perform
+					rescue => e
+						puts "ERROR IN THREAD"
+						puts e.message
+						puts e.backtrace
+					end
 				end
 				launch_thread
 			}

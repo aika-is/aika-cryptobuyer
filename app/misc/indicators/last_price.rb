@@ -15,6 +15,7 @@ module Indicators
 				from = truncated_time
 				to = from + interval
 				trades = Wallet.client_for(client_id).get_trades(symbol_name, from, to)
+				symbol = nil
 				price = trades.last[:price] if trades.length > 0
 				if !price.present?
 					from = truncated_time-(interval)
@@ -24,6 +25,16 @@ module Indicators
 				end
 				s = SymbolIndicator.find_or_create_by!(client_id: client_id, symbol_name: symbol_name, indicator_id: self.indicator_id, interval: interval, interval_time: truncated_time)
 				s.value = price
+				if s.value.nil?
+					puts "RETURNING NIL!?!?!?!"
+					puts "TRADES"
+					puts trades
+					puts "SYMBOL"
+					puts symbol
+					puts "PRICE"
+					puts price
+					raise "RETURNING NIL EXCEPTION"
+				end
 				s.save
 			end
 			s
