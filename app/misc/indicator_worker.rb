@@ -1,6 +1,6 @@
 class IndicatorWorker
 
-	def initialize(client_id, symbol_name, indicator_properties, time = nil
+	def initialize(client_id, symbol_name, indicator_properties, time = nil)
 		@client_id = client_id
 		@symbol_name = symbol_name
 		@indicator_properties = indicator_properties
