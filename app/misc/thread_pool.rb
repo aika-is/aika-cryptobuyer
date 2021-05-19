@@ -27,7 +27,7 @@ class ThreadPool
 						puts e.backtrace
 					end
 				end
-				semaphore.synchronize {
+				@semaphore.synchronize {
 					launch_thread
 				}
 			}
@@ -40,7 +40,7 @@ class ThreadPool
 	def check_availability
 		@threads = @threads.delete_if{|e| !e.alive?}
 		if @threads.length < @size
-			semaphore.synchronize {
+			@semaphore.synchronize {
 				launch_thread
 			}
 		end
