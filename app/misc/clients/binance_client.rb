@@ -70,7 +70,7 @@ module Clients
 
 		def self.is_open_order? wallet, symbol_name, order_id
 			order = get_order(wallet, symbol_name, order_id)
-			return ['FILLED', 'CANCELED'].include?(order[:status])
+			return !['FILLED', 'CANCELED'].include?(order[:status])
 		end
 
 		def self.perform_limit_sale(wallet, symbol_name, quantity, price)
