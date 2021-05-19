@@ -108,7 +108,7 @@ module Clients
 			tale = liquidation[:tale]
 			price = liquidation[:price]
 			
-			order = get_order tale.symbol_name, tale.sale_id
+			order = get_order wallet, tale.symbol_name, tale.sale_id
 			cancel_order tale.symbol_name, tale.sale_id
 			quantity = order[:origQty].to_f - order[:executedQty].to_f
 			order = perform_limit_sale(wallet, tale.symbol_name, quantity, price)
