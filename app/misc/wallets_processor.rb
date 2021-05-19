@@ -3,9 +3,7 @@ class WalletsProcessor
 		max_loop = 0
 		start = Time.now
 		remaining = total_time
-		wallets.each do |wallet|
-			self.relaunch_wallet wallet
-		end
+		self.heat_wallets Wallet.all
 		while remaining > max_loop
 			wallets.each do |wallet|
 				loop_start = Time.now
