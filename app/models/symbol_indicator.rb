@@ -83,5 +83,5 @@ class SymbolIndicator
 		end
 		return symbol_indicator
 	end
-
+	index({client_id: 1, symbol_name: 1, indicator_id: 1, interval: 1, interval_time: -1}, { background: true, unique: true })
 end
