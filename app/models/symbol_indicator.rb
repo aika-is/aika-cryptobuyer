@@ -78,7 +78,7 @@ class SymbolIndicator
 		truncated_time = Time.at(((time.to_i / interval)*interval))
 		truncated_time = truncated_time - interval if truncated_time + interval > Time.now
 		symbol_indicator = SymbolIndicator.find_by(client_id: client_id, symbol_name: symbol_name, indicator_id: indicator_id, interval_time: truncated_time, interval: interval)
-		if symbol_indicator.nil?
+		if symbol_indicator.nil? || symbol_indicator.value.nil?
 			symbol_indicator = SymbolIndicator.fetch_indicator(indicator_id).fetch_symbol_indicator client_id, symbol_name, time, interval
 		end
 		return symbol_indicator
