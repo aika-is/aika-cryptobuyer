@@ -5,6 +5,7 @@ class ThreadPool
 		@threads = []
 		@workers = []
 		@restart = restart
+		@semaphore = Mutex.new
 	end
 
 	def append(worker)
@@ -26,7 +27,9 @@ class ThreadPool
 						puts e.backtrace
 					end
 				end
-				launch_thread
+				semaphore.synchronize {
+					launch_thread
+				}
 			}
 			if @restart
 				@workers << worker
@@ -37,7 +40,9 @@ class ThreadPool
 	def check_availability
 		@threads = @threads.delete_if{|e| !e.alive?}
 		if @threads.length < @size
-			launch_thread
+			semaphore.synchronize {
+				launch_thread
+			}
 		end
 	end
 end
