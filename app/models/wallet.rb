@@ -10,6 +10,8 @@ class Wallet
 	field :positions_quantity, type: Integer
 	field :strict_amounts, type: Boolean, default: true
 
+	field :excluded_coins, type: Array, default: []
+
 	field :encrypted_ak, type: String
 	field :encrypted_sk, type: String
 
@@ -39,6 +41,10 @@ class Wallet
 
 	def strategy
 		Wallet.strategy_for self.strategy_id
+	end
+
+	def exluded_symbols
+		wallet.client.get_positioned_assets(self).collect{|e| "#{e[:asset]}#{self.base_coin}"} + self.excluded_coins.collect{|e| "#{e}#{self.base_coin}"}
 	end
 
 	def self.client_for client_id

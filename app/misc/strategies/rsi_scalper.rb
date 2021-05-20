@@ -24,8 +24,7 @@ module Strategies
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
-				not_in = wallet.client.get_positioned_assets(wallet).collect{|e| "#{e[:asset]}#{wallet.base_coin}"}
-				symbol_indicator = pick_symbol(wallet, not_in)
+				symbol_indicator = pick_symbol(wallet, wallet.excluded_symbols)
 				
 				if symbol_indicator.present?
 					puts "STARTING PURCHASE ATTEMPT"
