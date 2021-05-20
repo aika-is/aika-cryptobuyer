@@ -12,7 +12,7 @@ module Strategies
 
 		def self.pick_stale_to_liquidate wallet
 			prices = wallet.client.get_prices
-			PurchaseTale.where(sale_completed: false).collect{|t| {tale: t, price: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.select{|e| e[:tale][:created_at] < Time.now - 24.hours}.last
+			PurchaseTale.open_tales(wallet).collect{|t| {tale: t, price: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.select{|e| e[:tale][:created_at] < Time.now - 24.hours}.last
 		end
 
 		def self.perform_purchase wallet
