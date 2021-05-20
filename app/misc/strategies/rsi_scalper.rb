@@ -20,7 +20,7 @@ module Strategies
 
 			wallet_assets = wallet.client.get_assets wallet
 			assets_value = wallet_assets.collect{|e| e[:value]}.reduce(:+)
-			order_amount = [(assets_value / wallet.positions_quantity).round(2), 10].max
+			order_amount = [(assets_value / wallet.positions_quantity).round(2), 15].max
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
