@@ -57,7 +57,7 @@ module Strategies
 		end
 
 		def self.pick_symbol wallet, not_in=[]
-			symbols = CryptoSymbol.symbols_for(wallet.client_id).to_a.shuffle
+			symbols = CryptoSymbol.symbols_for(wallet.client_id, not_in).to_a.shuffle
 
 			best_candidate = nil
 			symbols = symbols.each_with_index.collect do |symbol, i| 

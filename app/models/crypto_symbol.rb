@@ -11,8 +11,8 @@ class CryptoSymbol
 		return cs
 	end
 
-	def self.symbols_for(client_id)
-		CryptoSymbol.where(client_ids: client_id).sort(symbol_name: 1)
+	def self.symbols_for(client_id, not_in=[])
+		CryptoSymbol.where(client_ids: client_id, symbol_name: {'$nin': not_in}).sort(symbol_name: 1)
 	end
 
 	def self.deregister_not_in_symbols!(client_id, symbols)
