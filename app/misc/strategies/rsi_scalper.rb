@@ -24,7 +24,7 @@ module Strategies
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
-				symbol_indicator = pick_symbol(wallet, wallet.excluded_symbols)
+				symbol_indicator = pick_symbol(wallet)
 				
 				if symbol_indicator.present?
 					puts "STARTING PURCHASE ATTEMPT"
@@ -55,8 +55,8 @@ module Strategies
 			return tale
 		end
 
-		def self.pick_symbol wallet, not_in=[]
-			symbols = CryptoSymbol.symbols_for(wallet.client_id, not_in).to_a.shuffle
+		def self.pick_symbol wallet
+			symbols = CryptoSymbol.symbols_for(wallet.client_id, wallet.excluded_symbols).to_a.shuffle
 
 			best_candidate = nil
 			symbols = symbols.each_with_index.collect do |symbol, i| 

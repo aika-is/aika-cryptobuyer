@@ -43,8 +43,8 @@ class Wallet
 		Wallet.strategy_for self.strategy_id
 	end
 
-	def exluded_symbols
-		wallet.client.get_positioned_assets(self).collect{|e| "#{e[:asset]}#{self.base_coin}"} + self.excluded_coins.collect{|e| "#{e}#{self.base_coin}"}
+	def excluded_symbols
+		self.client.get_positioned_assets(self).collect{|e| "#{e[:asset]}#{self.base_coin}"} + self.excluded_coins.collect{|e| "#{e}#{self.base_coin}"}
 	end
 
 	def self.client_for client_id
