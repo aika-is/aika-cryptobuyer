@@ -32,7 +32,7 @@ module Strategies
 					price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
 					order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
 
-					price = order[:fills].collect{|e| e[:price].to_f}.reduce(:+)/order[:fills].length
+					price = order[:fills].last[:price].to_f
 					tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], symbol_indicator: symbol_indicator.as_json.except!("_id"))
 
 					remote_symbol = wallet.client.get_symbol(tale.symbol_name)
