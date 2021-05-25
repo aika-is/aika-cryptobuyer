@@ -26,7 +26,7 @@ module Strategies
 		def self.perform_purchase wallet
 			tale = nil
 
-			order_amount = calculate_order_amount
+			order_amount = calculate_order_amount wallet
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
