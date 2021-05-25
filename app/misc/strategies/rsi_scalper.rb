@@ -6,6 +6,7 @@ module Strategies
 		end
 
 		def self.is_stale? wallet
+			return false if wallet.client.get_available_cash(wallet) > calculate_order_amount(wallet)
 			return false if PurchaseTale.where(wallet_id: wallet._id).sort(created_at: -1).count == 0
 			return PurchaseTale.where(wallet_id: wallet._id).sort(created_at: -1).first.created_at < Time.now - 6.hours
 		end
@@ -15,12 +16,17 @@ module Strategies
 			PurchaseTale.open_tales(wallet).collect{|t| {tale: t, price: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.select{|e| e[:tale][:created_at] < Time.now - 24.hours}.last
 		end
 
-		def self.perform_purchase wallet
-			tale = nil
-
+		def self.calculate_order_amount wallet
 			wallet_assets = wallet.client.get_assets wallet
 			assets_value = wallet_assets.collect{|e| e[:value]}.reduce(:+)
 			order_amount = [(assets_value / wallet.positions_quantity).round(2), 15].max
+			return order_amount
+		end
+
+		def self.perform_purchase wallet
+			tale = nil
+
+			order_amount = calculate_order_amount
 			cash = wallet.client.get_available_cash wallet
 
 			if cash > order_amount
