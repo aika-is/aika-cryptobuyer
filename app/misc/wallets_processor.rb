@@ -18,7 +18,7 @@ class WalletsProcessor
 				max_loop = [max_loop, loop_time].max
 				remaining = total_time - (Time.now - start)
 
-				self.log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.client_id}"]})
+				self.log("WALLET LOOP COMPLETE - Loop Time: #{loop_time} - Max Loop: #{max_loop} - Remaining: #{remaining}", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "CLIENT_#{wallet.client_id}"]})
 
 				return if remaining < max_loop
 			end
