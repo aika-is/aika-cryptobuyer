@@ -8,7 +8,7 @@ module Strategies
 		def self.is_stale? wallet
 			return false if wallet.client.get_available_cash(wallet) > calculate_order_amount(wallet)
 			return false if PurchaseTale.where(wallet_id: wallet._id).sort(created_at: -1).count == 0
-			return PurchaseTale.where(wallet_id: wallet._id).sort(created_at: -1).first.created_at < Time.now - 3.hours
+			return PurchaseTale.where(wallet_id: wallet._id).sort(created_at: -1).first.created_at < Time.now - 6.hours
 		end
 
 		def self.pick_stale_to_liquidate wallet
