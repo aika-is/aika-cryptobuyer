@@ -7,7 +7,7 @@ module Clients
 
 			symbols = symbols[:symbols]
 			if wallet.present?
-				symbols = symbols.select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol]) && e[:status] == 'TRADING'}.sort_by{|e| e[:symbol]}
+				symbols = symbols.select{|e| e[:quoteAsset] == wallet.base_coin && !not_in.include?(e[:symbol]) && e[:status] == 'TRADING' && e[:permissions].include?('SPOT')}.sort_by{|e| e[:symbol]}
 			end
 			return symbols
 		end
