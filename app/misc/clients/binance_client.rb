@@ -49,7 +49,7 @@ module Clients
 
 		def self.get_available_cash wallet
 			wallet_assets = get_assets wallet
-			return wallet_assets.find{|e| e[:asset] == wallet.base_coin}[:free].to_f
+			return (wallet_assets.find{|e| e[:asset] == wallet.base_coin} || {free: 0})[:free].to_f
 		end
 
 		def self.get_order wallet, symbol_name, order_id
