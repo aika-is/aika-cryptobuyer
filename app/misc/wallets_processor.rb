@@ -54,7 +54,7 @@ class WalletsProcessor
 			liquidation = wallet.strategy.pick_stale_to_liquidate wallet
 			if liquidation.present?
 				wallet.client.liquidate wallet, liquidation
-				log("WALLET STALENESS DETECTED", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "STRATEGY_#{wallet.strategy_id}"]}, {liquidation: liquidation})
+				log("WALLET STALENESS DETECTED", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "STRATEGY_#{wallet.strategy_id}"], {liquidation: liquidation})
 			else
 				log("WALLET STALENESS DETECTED - BUT NOTHING TO LIQUIDATE", {tags: ['CRYPTOBUYER', 'WALLET_LOOP', "ALIAS_#{wallet.alias}", "STRATEGY_#{wallet.strategy_id}"]})
 			end
