@@ -67,7 +67,7 @@ module Strategies
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
 				e = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
-				elegible = (e.value < 30)
+				elegible = (e.value < 30 && e.delta != 0)
 				puts "ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
 
 				return e if elegible
