@@ -120,7 +120,8 @@ module Clients
 		end
 
 		def self.get(url, options = {})
-			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
+			@@last_request ||= 0
+			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
@@ -130,7 +131,8 @@ module Clients
 		end
 
 		def self.post(url, params, options = {})
-			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
+			@@last_request ||= 0
+			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
@@ -140,7 +142,8 @@ module Clients
 		end
 
 		def self.delete(url, options = {})
-			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
+			@@last_request ||= 0
+			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
