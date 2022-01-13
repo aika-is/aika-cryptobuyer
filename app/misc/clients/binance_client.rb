@@ -119,8 +119,8 @@ module Clients
 			return tale
 		end
 
-		def self.get url, options = {}
-			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+		def self.get(url, options = {})
+			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
@@ -130,8 +130,8 @@ module Clients
 		}
 		end
 
-		def self.post url, params, options
-			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+		def self.post(url, params, options={})
+			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
@@ -140,8 +140,8 @@ module Clients
 			return RestClient.post(url, params, options)
 		end
 
-		def self.delete url, options
-			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+		def self.delete(url, options={})
+			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
 				sleep(delta)
