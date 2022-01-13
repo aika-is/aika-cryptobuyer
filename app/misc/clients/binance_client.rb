@@ -127,10 +127,9 @@ module Clients
 			end
 			@@last_request = Time.now
 			return RestClient.get(url, options)
-		}
 		end
 
-		def self.post(url, params, options={})
+		def self.post(url, params, options = {})
 			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
@@ -140,7 +139,7 @@ module Clients
 			return RestClient.post(url, params, options)
 		end
 
-		def self.delete(url, options={})
+		def self.delete(url, options = {})
 			if (@@last_request.present? && (Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}"
