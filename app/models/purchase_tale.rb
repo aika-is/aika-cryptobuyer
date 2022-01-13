@@ -15,6 +15,9 @@ class PurchaseTale
 
 	field :sale_id, type: Integer
 	field :sale_completed, type: Boolean, default: false
+	field :sale_at, type: Time
+
+	field :open_duration, tupe: Integer
 
 	field :symbol_indicator, type: Hash
 

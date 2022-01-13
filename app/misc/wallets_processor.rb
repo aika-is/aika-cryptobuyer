@@ -39,7 +39,10 @@ class WalletsProcessor
 		PurchaseTale.open_tales(wallet).each do |tale|
 			if tale.sale_id.present?
 				if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.sale_id)
+					order = wallet.client.get_order wallet, tale.symbol_name, tale.sale_id
 					tale.sale_completed = true
+					tale.sale_at = Time.at(order[:updateTime]/1000)
+					tale.open_duration = tale.sale_at - tale.buy_at
 					tale.save
 				end
 			else
