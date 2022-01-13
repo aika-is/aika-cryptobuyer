@@ -111,6 +111,9 @@ module Clients
 			order = get_order wallet, tale.symbol_name, tale.sale_id
 			cancel_order wallet, tale.symbol_name, tale.sale_id
 			quantity = order[:origQty].to_f - order[:executedQty].to_f
+			remote_symbol = wallet.client.get_symbol(tale.symbol_name)
+			precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+			quantity = quantity.floor(precision)
 			order = perform_limit_sale(wallet, tale.symbol_name, quantity, price)
 
 			tale.liquidated = true
