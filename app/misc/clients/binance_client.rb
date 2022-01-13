@@ -2,7 +2,7 @@ module Clients
 	class BinanceClient
 
 		def self.get_symbols(wallet=nil, not_in=[])
-			response = RestClient.get("https://api.binance.com/api/v3/exchangeInfo")
+			response = self.get "https://api.binance.com/api/v3/exchangeInfo"
 			symbols = JSON.parse(response.body, symbolize_names: true)
 
 			symbols = symbols[:symbols]
@@ -17,7 +17,7 @@ module Clients
 		end
 
 		def self.get_prices
-			response = RestClient.get("https://api.binance.com/api/v3/ticker/price")
+			response = self.get("https://api.binance.com/api/v3/ticker/price")
 			return JSON.parse(response.body, symbolize_names: true).collect{|e| {symbol_name: e[:symbol], price: e[:price]}}
 		end
 
@@ -27,7 +27,7 @@ module Clients
 
 		def self.get_trades symbol_name, from, to
 			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
-			response = RestClient.get("https://api.binance.com/api/v3/aggTrades", {params: params})
+			response = self.get("https://api.binance.com/api/v3/aggTrades", {params: params})
 			trades = JSON.parse(response.body, symbolize_names: true)
 			trades.collect{|e| {price: e[:p].to_f, quantity: e[:q].to_f, time: Time.at(e[:T]/1000)}}
 		end
@@ -36,7 +36,7 @@ module Clients
 			timestamp = Time.now.to_i*1000
 			params = {timestamp: timestamp}
 			params[:signature] = self.get_signature(wallet, params)
-			response = RestClient.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': wallet.ak})
+			response = self.get("https://api.binance.com/api/v3/account", {params: params, 'X-MBX-APIKEY': wallet.ak})
 			assets = JSON.parse(response.body, symbolize_names: true)[:balances]
 
 			prices = self.get_prices
@@ -56,7 +56,7 @@ module Clients
 			timestamp = Time.now.to_i*1000
 			params = {symbol: symbol_name, orderId: order_id, timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
-			response = RestClient.get("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': wallet.ak})
+			response = self.get("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': wallet.ak})
 			return JSON.parse(response.body, symbolize_names: true)
 		end
 
@@ -64,7 +64,7 @@ module Clients
 			timestamp = Time.now.to_i*1000
 			params = {symbol: symbol_name, orderId: order_id, timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
-			response = RestClient.delete("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': wallet.ak})
+			response = self.delete("https://api.binance.com/api/v3/order", {params: params, 'X-MBX-APIKEY': wallet.ak})
 			return JSON.parse(response.body, symbolize_names: true)
 		end
 
@@ -77,7 +77,7 @@ module Clients
 			timestamp = Time.now.to_i*1000
 			params = {symbol: symbol_name, side: 'SELL', type: 'LIMIT', timeInForce: 'GTC', quantity: quantity, price: price, timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
-			response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
+			response = self.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
 			return JSON.parse(response.body, symbolize_names: true)
 		end
 
@@ -86,7 +86,7 @@ module Clients
 			params = {symbol: symbol_name, side: 'BUY', type: 'MARKET', quoteOrderQty: current_order_amount, timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
 			begin
-				response = RestClient.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
+				response = self.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
 			rescue => e
 				puts params
 				puts e.message
@@ -117,6 +117,37 @@ module Clients
 			tale.save
 
 			return tale
+		end
+
+		def self.get url, options = {}
+			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+				delta = 0.05 - (Time.now - @@last_request)
+				puts "COOLING DOWN FOR #{delta}"
+				sleep(delta)
+			end
+			@@last_request = Time.now
+			return RestClient.get(url, options)
+		}
+		end
+
+		def self.post url, params, options
+			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+				delta = 0.05 - (Time.now - @@last_request)
+				puts "COOLING DOWN FOR #{delta}"
+				sleep(delta)
+			end
+			@@last_request = Time.now
+			return RestClient.post(url, params, options)
+		end
+
+		def self.delete url, options
+			if @@last_request.present? && (Time.now - @@last_request) < 0.05
+				delta = 0.05 - (Time.now - @@last_request)
+				puts "COOLING DOWN FOR #{delta}"
+				sleep(delta)
+			end
+			@@last_request = Time.now
+			return RestClient.delete(url, options)
 		end
 
 	end
