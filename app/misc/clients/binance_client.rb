@@ -40,7 +40,7 @@ module Clients
 			assets = JSON.parse(response.body, symbolize_names: true)[:balances]
 
 			prices = self.get_prices
-			return assets.select{|e| (e[:free].to_f + e[:locked].to_f) > 0}.collect{|e| e.merge({amount: (e[:free].to_f + e[:locked].to_f), price: (prices.find{|p| p[:symbol_name] == "#{e[:asset]}#{wallet.base_coin}"} || {price: 1})[:price].to_f})}.collect{|e| e.merge({value: e[:amount] * e[:price]})}
+			return assets.select{|e| (e[:free].to_f + e[:locked].to_f) > 0 && e[:asset] != "NFT"}.collect{|e| e.merge({amount: (e[:free].to_f + e[:locked].to_f), price: (prices.find{|p| p[:symbol_name] == "#{e[:asset]}#{wallet.base_coin}"} || {price: 1})[:price].to_f})}.collect{|e| e.merge({value: e[:amount] * e[:price]})}
 		end
 
 		def self.get_positioned_assets wallet
