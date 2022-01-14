@@ -126,7 +126,7 @@ module Clients
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
-				puts "COOLING DOWN FOR #{delta}"
+				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end
 			@@last_request = Time.now
@@ -137,7 +137,7 @@ module Clients
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
-				puts "COOLING DOWN FOR #{delta}"
+				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end
 			@@last_request = Time.now
@@ -148,7 +148,7 @@ module Clients
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.05 - (Time.now - @@last_request)
-				puts "COOLING DOWN FOR #{delta}"
+				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end
 			@@last_request = Time.now
