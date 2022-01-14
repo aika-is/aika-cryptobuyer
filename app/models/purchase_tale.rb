@@ -32,7 +32,7 @@ class PurchaseTale
 	end
 
 	def self.goalFactor
-		return 1.01061
+		return 1.003
 	end
 
 	def self.open_tales wallet
