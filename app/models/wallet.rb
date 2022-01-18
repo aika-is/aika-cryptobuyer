@@ -43,6 +43,14 @@ class Wallet
 		Wallet.strategy_for self.strategy_id
 	end
 
+	def purchase_tales
+		PurchaseTale.where(wallet_id: self._id)
+	end
+
+	def open_tales
+		PurchaseTale.where(wallet_id: self._id, sale_completed: false)
+	end
+
 	def excluded_symbols
 		self.client.get_positioned_assets(self).collect{|e| "#{e[:asset]}#{self.base_coin}"} + self.excluded_coins.collect{|e| "#{e}#{self.base_coin}"}
 	end

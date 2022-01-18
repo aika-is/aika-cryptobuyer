@@ -5,10 +5,14 @@ module Strategies
 			[{indicator_id: 'RSI', interval: 1.minutes.to_i}]
 		end
 
+		def goal_factor
+			return 1.003
+		end
+
 		def self.is_stale? wallet
 			return false if wallet.client.get_available_cash(wallet) > calculate_order_amount(wallet)
-			return false if PurchaseTale.where(wallet_id: wallet._id).count == 0
-			return PurchaseTale.where(wallet_id: wallet._id).sort(updated_at: -1).first.updated_at < Time.now - 6.hours
+			return false if wallet.purchase_tales.count == 0
+			return wallet.purchase_tales.sort(updated_at: -1).first.updated_at < Time.now - 6.hours
 		end
 
 		def self.pick_stale_to_liquidate wallet
@@ -46,7 +50,7 @@ module Strategies
 					precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 					quantity = quantity.floor(precision)
 					precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
-					goal = tale.goal.round(precision)
+					goal = tale.goal(self.goal_factor).round(precision)
 					order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{precision}f" % goal)
 
 					tale.sale_id = order[:orderId]

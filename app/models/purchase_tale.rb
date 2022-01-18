@@ -23,16 +23,12 @@ class PurchaseTale
 
 	field :liquidated, type: Boolean, default: false	
 
-	def goal
-		return price * PurchaseTale.goalFactor
+	def goal goalFactor
+		return price * goalFactor
 	end
 
 	def self.stale_buys
 		self.where(buy_complete: false, buy_at: {'$lt': Time.now - 1.minute})
-	end
-
-	def self.goalFactor
-		return 1.003
 	end
 
 	def self.open_tales wallet

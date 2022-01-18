@@ -25,6 +25,11 @@ module Clients
 			self.get_prices.find{|e| e[:symbol_name] == symbol_name}
 		end
 
+		def self.get_book symbol_name
+			response = self.get("https://api.binance.com/api/v3/ticker/bookTicker", {symbol: symbol_name})
+			return JSON.parse(response.body, symbolize_names: true)
+		end
+
 		def self.get_trades symbol_name, from, to
 			params = {symbol: symbol_name, endTime: to.to_i*1000, startTime: from.to_i*1000}
 			response = self.get("https://api.binance.com/api/v3/aggTrades", {params: params})
