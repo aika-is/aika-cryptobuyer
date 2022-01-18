@@ -3,6 +3,7 @@ class WalletsProcessor
 		max_loop = 0
 		start = Time.now
 		remaining = total_time
+		@pool = ThreadPool.new(3, true)
 		self.heat_wallets Wallet.all
 		while remaining > max_loop
 			wallets.each do |wallet|
@@ -77,11 +78,10 @@ class WalletsProcessor
 	end
 
 	def self.update_indicators wallet
-		pool = ThreadPool.new(3, true)
 		wallet.strategy.indicators.each do |indicator_properties|
 			CryptoSymbol.symbols_for(wallet).each do |symbol|
 				puts "APPENDING #{symbol.symbol_name}"
-				pool.append(IndicatorWorker.new(wallet.client_id, symbol.symbol_name, indicator_properties))
+				@pool.append(IndicatorWorker.new(wallet.client_id, symbol.symbol_name, indicator_properties))
 			end
 		end
 	end
