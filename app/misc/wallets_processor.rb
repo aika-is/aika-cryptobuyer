@@ -103,6 +103,7 @@ class WalletsProcessor
 		wallet.open_buys.each do |tale|
 			if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.buy_id)
 				order = wallet.client.get_order wallet, tale.symbol_name, tale.buy_id
+				puts "SELLABLE TALE #{tale.symbol_name} - #{order[:status]}"
 				if order[:status] == "FILLED"
 					tale = wallet.strategy.perform_sale wallet, tale
 				end
