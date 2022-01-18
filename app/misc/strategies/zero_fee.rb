@@ -73,7 +73,7 @@ module Strategies
 				puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
 			end
 
-			order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{precision}f" % price)
+			order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{price_precision}f" % price)
 
 			tale.sale_id = order[:orderId]
 			tale.save
