@@ -9,11 +9,11 @@ class WalletsProcessor
 				loop_start = Time.now
 
 				self.sanitize_tales wallet
-				self.check_staleness wallet
 				self.discover_symbols wallet
 				self.track_value wallet
 				self.perform_purchases wallet
 				self.perform_sales wallet
+				self.check_staleness wallet
 
 				loop_time = (Time.now - loop_start)
 				max_loop = [max_loop, loop_time].max
