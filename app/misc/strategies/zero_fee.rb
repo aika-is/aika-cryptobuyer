@@ -60,6 +60,8 @@ module Strategies
 			quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			price_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
 
+			return tale if wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}.blank?
+			
 			quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
 			quantity = quantity.floor(quantity_precision)
 
@@ -78,11 +80,9 @@ module Strategies
 
 				tale.sale_id = order[:orderId]
 				tale.save
-				puts "RS - FINISHED SALE - #{tale.symbol_name}"
+				puts "ZF - FINISHED SALE - #{tale.symbol_name}"
 			else
-				puts "NO CURRENCY LEFT - SKIPPING"
-				tale.sale_completed = true
-				tale.save
+				puts "ZF - NO CURRENCY LEFT - SKIPPING"
 			end
 			return tale
 		end
