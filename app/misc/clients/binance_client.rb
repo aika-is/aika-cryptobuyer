@@ -1,7 +1,7 @@
 module Clients
 	class BinanceClient
 
-		def self.get_symbols(wallet=nil, not_in=[])
+		def self.get_symbols(,=nil, not_in=[])
 			response = self.get "https://api.binance.com/api/v3/exchangeInfo"
 			symbols = JSON.parse(response.body, symbolize_names: true)
 
@@ -26,7 +26,7 @@ module Clients
 		end
 
 		def self.get_book_ticker symbol_name
-			response = wallet.client.get("https://api.binance.com/api/v3/ticker/bookTicker?symbol=#{symbol_name}")
+			response = self.get("https://api.binance.com/api/v3/ticker/bookTicker?symbol=#{symbol_name}")
 			return JSON.parse(response.body, symbolize_names: true)
 		end
 
