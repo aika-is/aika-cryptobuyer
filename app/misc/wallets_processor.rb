@@ -100,7 +100,7 @@ class WalletsProcessor
 	end
 
 	def self.perform_sales wallet
-		wallet.open_sales.each do |tale|
+		wallet.open_buys.each do |tale|
 			if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.buy_id)
 				tale = wallet.strategy.perform_sale wallet, tale
 
