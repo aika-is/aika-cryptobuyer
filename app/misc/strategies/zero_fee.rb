@@ -63,21 +63,27 @@ module Strategies
 			quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
 			quantity = quantity.floor(quantity_precision)
 
-			book_ticker = wallet.client.get_book_ticker(tale.symbol_name)
+			if quantity > 0
+				book_ticker = wallet.client.get_book_ticker(tale.symbol_name)
 
-			puts "ZF - BUY PRICE #{tale.price}"
-			price = (tale.price+(1.0/(10**price_precision))).floor(price_precision)
-			puts "ZF - WILL SELL AT #{price}"
-			if price < book_ticker[:bidPrice].to_f
-				price = (book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))).floor(price_precision)
-				puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
+				puts "ZF - BUY PRICE #{tale.price}"
+				price = (tale.price+(1.0/(10**price_precision))).floor(price_precision)
+				puts "ZF - WILL SELL AT #{price}"
+				if price < book_ticker[:bidPrice].to_f
+					price = (book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))).floor(price_precision)
+					puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
+				end
+
+				order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{price_precision}f" % price)
+
+				tale.sale_id = order[:orderId]
+				tale.save
+				puts "RS - FINISHED SALE - #{tale.symbol_name}"
+			else
+				puts "NO CURRENCY LEFT - SKIPPING"
+				tale.sale_completed = true
+				tale.save
 			end
-
-			order = wallet.client.perform_limit_sale(wallet, tale.symbol_name, quantity, "%.#{price_precision}f" % price)
-
-			tale.sale_id = order[:orderId]
-			tale.save
-			puts "RS - FINISHED SALE - #{tale.symbol_name}"
 			return tale
 		end
 
