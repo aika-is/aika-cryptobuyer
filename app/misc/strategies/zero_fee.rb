@@ -37,7 +37,7 @@ module Strategies
 					quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 					book_ticker = wallet.client.get_book_ticker(symbol_indicator.symbol_name)
 
-					price = book_ticker[:askPrice].to_f-(1.0/(10**price_precision))
+					price = (book_ticker[:askPrice].to_f-(1.0/(10**price_precision))).floor(price_precision)
 					quantity = (order_amount/price).floor(quantity_precision)
 
 					order = wallet.client.perform_limit_buy(wallet, symbol_indicator.symbol_name, price, quantity)
@@ -66,10 +66,10 @@ module Strategies
 			book_ticker = wallet.client.get_book_ticker(tale.symbol_name)
 
 			puts "ZF - BUY PRICE #{tale.price}"
-			price = tale.price+(1.0/(10**price_precision))
+			price = (tale.price+(1.0/(10**price_precision))).floor(price_precision)
 			puts "ZF - WILL SELL AT #{price}"
 			if price < book_ticker[:bidPrice].to_f
-				price = book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))
+				price = (book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))).floor(price_precision)
 				puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
 			end
 
