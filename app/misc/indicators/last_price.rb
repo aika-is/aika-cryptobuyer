@@ -19,7 +19,7 @@ module Indicators
 				price = trades.last[:price] if trades.length > 0
 				if !price.present?
 					from = truncated_time-(interval)
-					puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{from}"
+					puts "FETCHING #{symbol_name} - #{self.indicator_id} - #{time} - #{from}" if rand() < 0.1
 					symbol = self.fetch_symbol_indicator client_id, symbol_name, from, interval
 					price = symbol.value if symbol.present?
 				end

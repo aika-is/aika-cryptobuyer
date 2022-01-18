@@ -57,9 +57,11 @@ module Strategies
 		def self.perform_sale wallet, tale
 			puts "ZF - STARTING PURCHASE SALE"
 			remote_symbol = wallet.client.get_symbol(tale.symbol_name)
+			quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+			price_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
+			
 			quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
-			precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
-			quantity = quantity.floor(precision)
+			quantity = quantity.floor(quantity_precision)
 
 			book_ticker = wallet.client.get_book_ticker(tale.symbol_name)
 
