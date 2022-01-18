@@ -89,11 +89,11 @@ module Strategies
 				puts "#{i}/#{symbols.length} #{Time.now}"
 				rsi = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
 				lp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now, self.indicators.last[:interval])
-				llp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now - 1.minute, self.indicators.last[:interval])
+				llp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now - (self.indicators.last[:interval]*2), self.indicators.last[:interval])
 				elegible = (rsi.value < 30 && lp.delta != 0 && llp.delta != 0)
 				puts "ZF - ELEGIBLE? - #{rsi.symbol_name} - #{rsi.value} - #{lp.value} - #{llp.value} - #{llp.delta}- #{elegible}"
 
-				return e if elegible
+				return rsi if elegible
 			end
 			return nil
 		end
