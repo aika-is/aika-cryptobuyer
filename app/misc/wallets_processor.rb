@@ -102,9 +102,11 @@ class WalletsProcessor
 	def self.perform_sales wallet
 		wallet.open_buys.each do |tale|
 			if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.buy_id)
-				tale = wallet.strategy.perform_sale wallet, tale
-
 				order = wallet.client.get_order wallet, tale.symbol_name, tale.buy_id
+				if order[:status] == "FILLED"
+					tale = wallet.strategy.perform_sale wallet, tale
+				end
+
 				tale.buy_complete = true
 				tale.buy_at = Time.at(order[:updateTime]/1000)
 				tale.save
