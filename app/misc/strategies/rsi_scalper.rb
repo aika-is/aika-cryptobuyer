@@ -70,7 +70,7 @@ module Strategies
 		end
 
 		def self.pick_symbol wallet
-			symbols = CryptoSymbol.symbols_for(wallet.client_id, wallet.excluded_symbols).to_a.shuffle
+			symbols = CryptoSymbol.symbols_for(wallet).to_a.shuffle
 
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
