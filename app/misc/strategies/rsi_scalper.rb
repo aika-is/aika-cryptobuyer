@@ -5,7 +5,7 @@ module Strategies
 			[{indicator_id: 'RSI', interval: 1.minutes.to_i}]
 		end
 
-		def goal_factor
+		def self.goal_factor
 			return 1.003
 		end
 
