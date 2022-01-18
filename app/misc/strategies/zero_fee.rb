@@ -59,7 +59,7 @@ module Strategies
 			remote_symbol = wallet.client.get_symbol(tale.symbol_name)
 			quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			price_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
-			
+
 			quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f
 			quantity = quantity.floor(quantity_precision)
 
@@ -68,8 +68,8 @@ module Strategies
 			puts "ZF - BUY PRICE #{tale.price}"
 			price = tale.price+(1.0/(10**price_precision))
 			puts "ZF - WILL SELL AT #{price}"
-			if price < book_ticker[:bidPrice]
-				price = book_ticker[:bidPrice]+(1.0/(10**price_precision))
+			if price < book_ticker[:bidPrice].to_f
+				price = book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))
 				puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
 			end
 
