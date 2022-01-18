@@ -12,7 +12,7 @@ class CryptoSymbol
 	end
 
 	def self.symbols_for(wallet)
-		CryptoSymbol.where(client_ids: wallet.client_id, symbol_name: {'$nin': wallet.excluded_symbols}).sort(symbol_name: 1).filter{|e| e.symbol_name.index(wallet.base_coin) + wallet.base_coin.length == e.symbol_name.length}
+		CryptoSymbol.where(client_ids: wallet.client_id, symbol_name: {'$nin': wallet.excluded_symbols}).sort(symbol_name: 1).filter{|e| e.symbol_name.index(wallet.base_coin).present? && e.symbol_name.index(wallet.base_coin) + wallet.base_coin.length == e.symbol_name.length}
 	end
 
 	def self.deregister_not_in_symbols!(client_id, symbols)
