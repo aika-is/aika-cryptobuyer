@@ -40,7 +40,7 @@ module Strategies
 					price = book_ticker[:askPrice].to_f-(1.0/(10**price_precision))
 					quantity = (order_amount/price).floor(quantity_precision)
 
-					order = wallet.client.perform_limit_buy(wallet, symbol_indicator.symbol_name, price, order_amount)
+					order = wallet.client.perform_limit_buy(wallet, symbol_indicator.symbol_name, price, quantity)
 
 					tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: false, asset_quantity: quantity, symbol_indicator: symbol_indicator.as_json.except!("_id"))
 
