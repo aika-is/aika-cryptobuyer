@@ -4,7 +4,7 @@ class WalletsProcessor
 		start = Time.now
 		remaining = total_time
 		@pool = ThreadPool.new(3, true)
-		self.heat_wallets Wallet.all
+		self.heat_wallets Wallet.active
 		while remaining > max_loop
 			wallets.each do |wallet|
 				loop_start = Time.now
