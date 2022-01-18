@@ -147,7 +147,7 @@ module Clients
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
-				sleep(delta)
+				sleep(delta) if delta > 0
 			end
 			@@last_request = Time.now
 			return RestClient.get(url, options)
@@ -158,7 +158,7 @@ module Clients
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
-				sleep(delta)
+				sleep(delta) if delta > 0
 			end
 			@@last_request = Time.now
 			return RestClient.post(url, params, options)
@@ -169,7 +169,7 @@ module Clients
 			if ((Time.now - @@last_request) < 0.05)
 				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
-				sleep(delta)
+				sleep(delta) if delta > 0
 			end
 			@@last_request = Time.now
 			return RestClient.delete(url, options)
