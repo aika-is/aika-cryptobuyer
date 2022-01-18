@@ -2,7 +2,8 @@ module Strategies
 	class ZeroFee
 
 		def self.indicators
-			[{indicator_id: 'RSI', interval: 1.minutes.to_i}]
+			[{indicator_id: 'RSI', interval: 1.minutes.to_i},
+			{indicator_id: 'LAST_PRICE', interval: 1.minutes.to_i}]
 		end
 
 		def self.is_stale? wallet
@@ -86,9 +87,11 @@ module Strategies
 
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
-				e = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
-				elegible = (e.value < 30 && e.delta != 0)
-				puts "ZF - ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
+				rsi = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
+				lp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now, self.indicators.last[:interval])
+				lp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now - 1.minute, self.indicators.last[:interval])
+				elegible = (rsi.value < 30 && lp.delta != 0 && llp.delta != 0)
+				puts "ZF - ELEGIBLE? - #{rsi.symbol_name} - #{rsi.value} - #{lp.value} - #{llp.value} - #{llp.delta}- #{elegible}"
 
 				return e if elegible
 			end
