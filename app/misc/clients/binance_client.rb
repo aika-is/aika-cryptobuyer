@@ -145,7 +145,7 @@ module Clients
 		def self.get(url, options = {})
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
-				delta = 0.05 - (Time.now - @@last_request)
+				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end
@@ -156,7 +156,7 @@ module Clients
 		def self.post(url, params, options = {})
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
-				delta = 0.05 - (Time.now - @@last_request)
+				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end
@@ -167,7 +167,7 @@ module Clients
 		def self.delete(url, options = {})
 			@@last_request ||= 0
 			if ((Time.now - @@last_request) < 0.05)
-				delta = 0.05 - (Time.now - @@last_request)
+				delta = 0.06 - (Time.now - @@last_request)
 				puts "COOLING DOWN FOR #{delta}" if rand() < 0.01
 				sleep(delta)
 			end

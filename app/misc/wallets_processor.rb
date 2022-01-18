@@ -105,8 +105,8 @@ class WalletsProcessor
 				tale = wallet.strategy.perform_sale wallet, tale
 
 				order = wallet.client.get_order wallet, tale.symbol_name, tale.buy_id
-				tale.sale_completed = true
-				tale.sale_at = Time.at(order[:updateTime]/1000)
+				tale.buy_completed = true
+				tale.buy_at = Time.at(order[:updateTime]/1000)
 				tale.save
 			end
 		end
