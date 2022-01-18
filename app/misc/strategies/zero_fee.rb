@@ -61,7 +61,7 @@ module Strategies
 			precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 			quantity = quantity.floor(precision)
 
-			book_ticker = wallet.client.get_book_ticker(symbol_indicator.symbol_name)
+			book_ticker = wallet.client.get_book_ticker(tale.symbol_name)
 
 			puts "ZF - BUY PRICE #{tale.price}"
 			price = tale.price+(1.0/(10**price_precision))

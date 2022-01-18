@@ -73,7 +73,7 @@ class WalletsProcessor
 		symbols.each do |symbol|
 			CryptoSymbol.register_symbol!(wallet.client_id, symbol)
 		end
-		CryptoSymbol.deregister_not_in_symbols!(wallet.client_id, symbols)
+		CryptoSymbol.deregister_not_in_symbols!(wallet)
 	end
 
 	def self.update_indicators wallet
