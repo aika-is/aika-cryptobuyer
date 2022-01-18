@@ -32,11 +32,17 @@ module Strategies
 				if symbol_indicator.present?
 					puts "STARTING PURCHASE ATTEMPT"
 					
-					price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
-					order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
+					remote_symbol = wallet.client.get_symbol(symbol_indicator.symbol_name)
+					price_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
+					quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+					book_ticker = wallet.client.get_book_ticker(symbol_indicator.symbol_name)
 
-					price = order[:fills].last[:price].to_f
-					tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: true, asset_quantity: order[:executedQty], symbol_indicator: symbol_indicator.as_json.except!("_id"))
+					price = book_ticker[:askPrice].to_f-(1.0/(10**price_precision))
+					quantity = (order_amount/price).floor(quantity_precision)
+
+					order = wallet.client.perform_limit_buy(wallet, symbol_indicator.symbol_name, price, order_amount)
+
+					tale = PurchaseTale.create!(wallet_id: wallet._id, symbol_name: symbol_indicator.symbol_name, price: price, buy_id: order[:orderId], buy_complete: false, asset_quantity: quantity, symbol_indicator: symbol_indicator.as_json.except!("_id"))
 
 					remote_symbol = wallet.client.get_symbol(tale.symbol_name)
 					quantity = wallet.client.get_assets(wallet).find{|e| e[:asset] == tale.symbol_name.gsub(wallet.base_coin,'')}[:free].to_f

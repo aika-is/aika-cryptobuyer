@@ -25,8 +25,8 @@ module Clients
 			self.get_prices.find{|e| e[:symbol_name] == symbol_name}
 		end
 
-		def self.get_book symbol_name
-			response = self.get("https://api.binance.com/api/v3/ticker/bookTicker", {symbol: symbol_name})
+		def self.get_book_ticker symbol_name
+			response = wallet.client.get("https://api.binance.com/api/v3/ticker/bookTicker?symbol=#{symbol_name}")
 			return JSON.parse(response.body, symbolize_names: true)
 		end
 
@@ -89,6 +89,21 @@ module Clients
 		def self.perform_market_buy(wallet, symbol_name, current_order_amount)
 			timestamp = Time.now.to_i*1000
 			params = {symbol: symbol_name, side: 'BUY', type: 'MARKET', quoteOrderQty: current_order_amount, timestamp: timestamp}
+			params[:signature] = get_signature(wallet, params)
+			begin
+				response = self.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
+			rescue => e
+				puts params
+				puts e.message
+				puts e.response.body
+				raise e
+			end
+			return JSON.parse(response.body, symbolize_names: true)
+		end
+
+		def self.perform_limit_buy(wallet, symbol_name, price, quantity)
+			timestamp = Time.now.to_i*1000
+			params = {symbol: symbol_name, side: 'BUY', type: 'LIMIT', price: price, quantity: quantity, timeInForce: "GTC" timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
 			begin
 				response = self.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
