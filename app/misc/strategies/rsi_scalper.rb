@@ -17,7 +17,7 @@ module Strategies
 
 		def self.pick_stale_to_liquidate wallet
 			prices = wallet.client.get_prices
-			PurchaseTale.open_tales(wallet).collect{|t| {tale: t, price: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.last
+			wallet.open_sales.collect{|t| {tale: t, price: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f, loss_percentage: prices.find{|p| p[:symbol_name] == t.symbol_name}[:price].to_f / t.price}}.sort_by{|e| e[:loss_percentage]}.last
 		end
 
 		def self.calculate_order_amount wallet
@@ -37,7 +37,7 @@ module Strategies
 				symbol_indicator = pick_symbol(wallet)
 				
 				if symbol_indicator.present?
-					puts "STARTING PURCHASE ATTEMPT"
+					puts "RS - STARTING PURCHASE ATTEMPT"
 					
 					price = wallet.client.get_price(symbol_indicator.symbol_name)[:price]
 					order = wallet.client.perform_market_buy(wallet, symbol_indicator.symbol_name, order_amount)
@@ -55,14 +55,18 @@ module Strategies
 
 					tale.sale_id = order[:orderId]
 					tale.save
-					puts "FINISHED PURCHASE - #{tale.symbol_name}"
+					puts "RS - FINISHED PURCHASE - #{tale.symbol_name}"
 				else
-					puts "NO GOOD TALE"
+					puts "RS - NO GOOD TALE"
 				end
 			else
-				puts "NO MONEY LEFT"
+				puts "RS - NO MONEY LEFT"
 			end
 			return tale
+		end
+
+		def self.perform_sale wallet, tale
+			puts "RS - AIN'T DOIN' DAT"
 		end
 
 		def self.pick_symbol wallet
@@ -72,7 +76,7 @@ module Strategies
 				puts "#{i}/#{symbols.length} #{Time.now}"
 				e = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.first[:indicator_id], Time.now, self.indicators.first[:interval])
 				elegible = (e.value < 30 && e.delta != 0)
-				puts "ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
+				puts "RS - ELEGIBLE? - #{e.symbol_name} - #{e.value} - #{elegible}"
 
 				return e if elegible
 			end

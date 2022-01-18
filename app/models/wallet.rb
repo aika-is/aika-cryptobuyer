@@ -49,8 +49,12 @@ class Wallet
 		PurchaseTale.where(wallet_id: self._id)
 	end
 
-	def open_tales
-		PurchaseTale.where(wallet_id: self._id, sale_completed: false)
+	def open_sales
+		PurchaseTale.where(wallet_id: self._id, buy_completed: true, sale_completed: false)
+	end
+
+	def open_buys
+		PurchaseTale.where(wallet_id: self._id, buy_completed: false)
 	end
 
 	def excluded_symbols
@@ -63,6 +67,7 @@ class Wallet
 
 	def self.strategy_for strategy_id
 		return Strategies::RsiScalper if strategy_id == 'RSI_SCALPER'
+		return Strategies::ZeroFee if strategy_id == 'ZERO_FEE'
 	end
 
 	def self.active

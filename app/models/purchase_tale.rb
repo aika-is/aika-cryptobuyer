@@ -30,8 +30,4 @@ class PurchaseTale
 	def self.stale_buys
 		self.where(buy_complete: false, buy_at: {'$lt': Time.now - 1.minute})
 	end
-
-	def self.open_tales wallet
-		self.where(wallet_id: wallet._id, sale_completed: false)
-	end
 end

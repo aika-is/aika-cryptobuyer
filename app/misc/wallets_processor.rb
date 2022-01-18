@@ -13,6 +13,7 @@ class WalletsProcessor
 				self.discover_symbols wallet
 				self.track_value wallet
 				self.perform_purchases wallet
+				self.perform_sales wallet
 
 				loop_time = (Time.now - loop_start)
 				max_loop = [max_loop, loop_time].max
@@ -36,7 +37,7 @@ class WalletsProcessor
 	end
 
 	def self.sanitize_tales wallet
-		PurchaseTale.open_tales(wallet).each do |tale|
+		wallet.open_sales.each do |tale|
 			if tale.sale_id.present?
 				if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.sale_id)
 					order = wallet.client.get_order wallet, tale.symbol_name, tale.sale_id
@@ -95,6 +96,19 @@ class WalletsProcessor
 		loop do
 			tale = wallet.strategy.perform_purchase wallet
 			break if tale.nil?
+		end
+	end
+
+	def self.perform_sales wallet
+		wallet.open_sales.each do |tale|
+			if !wallet.client.is_open_order?(wallet, tale.symbol_name, tale.buy_id)
+				tale = wallet.strategy.perform_sale wallet, tale
+
+				order = wallet.client.get_order wallet, tale.symbol_name, tale.buy_id
+				tale.sale_completed = true
+				tale.sale_at = Time.at(order[:updateTime]/1000)
+				tale.save
+			end
 		end
 	end
 
