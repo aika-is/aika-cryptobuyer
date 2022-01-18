@@ -103,7 +103,7 @@ module Clients
 
 		def self.perform_limit_buy(wallet, symbol_name, price, quantity)
 			timestamp = Time.now.to_i*1000
-			params = {symbol: symbol_name, side: 'BUY', type: 'LIMIT', price: price, quantity: quantity, timeInForce: "GTC" timestamp: timestamp}
+			params = {symbol: symbol_name, side: 'BUY', type: 'LIMIT', price: price, quantity: quantity, timeInForce: "GTC", timestamp: timestamp}
 			params[:signature] = get_signature(wallet, params)
 			begin
 				response = self.post("https://api.binance.com/api/v3/order", params, {'X-MBX-APIKEY': wallet.ak})
