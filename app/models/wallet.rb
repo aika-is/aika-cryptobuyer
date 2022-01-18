@@ -19,6 +19,8 @@ class Wallet
 
 	field :strategy_id, type: String
 
+	field :active, type: Boolean, default: false
+
 	def ak
 		decrypt_text(self.inner_key, self.encrypted_ak)
 	end
@@ -61,5 +63,9 @@ class Wallet
 
 	def self.strategy_for strategy_id
 		return Strategies::RsiScalper if strategy_id == 'RSI_SCALPER'
+	end
+
+	def self.active
+		return self.where(active: true)
 	end
 end
