@@ -50,11 +50,11 @@ class Wallet
 	end
 
 	def open_sales
-		PurchaseTale.where(wallet_id: self._id, buy_completed: true, sale_completed: false)
+		PurchaseTale.where(wallet_id: self._id, buy_complete: true, sale_completed: false)
 	end
 
 	def open_buys
-		PurchaseTale.where(wallet_id: self._id, buy_completed: false)
+		PurchaseTale.where(wallet_id: self._id, buy_complete: false)
 	end
 
 	def excluded_symbols
