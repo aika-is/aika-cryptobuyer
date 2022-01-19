@@ -71,7 +71,7 @@ module Strategies
 				puts "ZF - BUY PRICE #{tale.price}"
 				price = (tale.price+(1.0/(10**price_precision))).floor(price_precision)
 				puts "ZF - WILL SELL AT #{price}"
-				if price < book_ticker[:bidPrice].to_f
+				if price <= book_ticker[:bidPrice].to_f
 					price = (book_ticker[:bidPrice].to_f+(1.0/(10**price_precision))).floor(price_precision)
 					puts "ZF - PRICE TOO LOW - INCREASING TO #{price}"
 				end
