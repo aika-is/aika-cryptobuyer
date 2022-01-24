@@ -93,7 +93,7 @@ module Strategies
 			order_amount = calculate_order_amount wallet
 
 			symbols = symbols.collect do |e|
-				lp = SymbolIndicator.collect_for(wallet.client_id, e.symbol_name, Strategies::ZeroFee.indicators.last[:indicator_id], Time.now-5.minutes, Strategies::ZeroFee.indicators.last[:interval])
+				lp = SymbolIndicator.collect_for(wallet.client_id, e.symbol_name, self.indicators.last[:indicator_id], Time.now-5.minutes, self.indicators.last[:interval])
 				remote_symbol = remote_symbols.find{|rs| rs[:symbol] == e.symbol_name}
 				quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
 				quantity = (order_amount/lp.value).floor(quantity_precision)
@@ -108,7 +108,7 @@ module Strategies
 
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
-				lp = SymbolIndicator.collect_for(wallet.client_id, symbol.symbol_name, self.indicators.last[:indicator_id], Time.now, self.indicators.last[:interval])
+				lp = SymbolIndicator.collect_for(wallet.client_id, symbol[:symbol_name], self.indicators.last[:indicator_id], Time.now, self.indicators.last[:interval])
 				elegible = (lp.delta != 0)
 				puts "ZF - ELEGIBLE? - #{lp.symbol_name} - #{lp.value} - #{lp.delta} - #{elegible}"
 
