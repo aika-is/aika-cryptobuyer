@@ -89,6 +89,22 @@ module Strategies
 
 		def self.pick_symbol wallet
 			symbols = CryptoSymbol.symbols_for(wallet).to_a.shuffle
+			remote_symbols = wallet.client.get_symbols()
+			order_amount = calculate_order_amount wallet
+
+			symbols = symbols.collect do |e|
+				lp = SymbolIndicator.collect_for(wallet.client_id, e.symbol_name, Strategies::ZeroFee.indicators.last[:indicator_id], Time.now-5.minutes, Strategies::ZeroFee.indicators.last[:interval])
+				remote_symbol = remote_symbols.find{|rs| rs[:symbol] == e.symbol_name}
+				quantity_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'LOT_SIZE'}[:stepSize].split('.').last.index('1') || -1)+1
+				quantity = (order_amount/lp.value).floor(quantity_precision)
+				price_precision = (remote_symbol[:filters].find{|e| e[:filterType] == 'PRICE_FILTER'}[:tickSize].split('.').last.index('1') || -1)+1
+				
+				next_price = (lp.value+(1.0/(10**price_precision))).ceil(price_precision)
+				revenue = (next_price - lp.value) * quantity
+				{symbol_name: e.symbol_name, revenue: revenue}
+			end
+
+			symbols = symbols.sort_by{ |e| -e[:revenue] }
 
 			symbols = symbols.each_with_index.collect do |symbol, i| 
 				puts "#{i}/#{symbols.length} #{Time.now}"
